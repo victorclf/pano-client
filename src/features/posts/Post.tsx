@@ -1,5 +1,5 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, Container, IconButton, Paper, Stack, Typography } from "@mui/material"
+import { Card, CardActions, CardContent, Container, IconButton, Paper, Typography } from "@mui/material"
 import { Comment } from "./Comment"
 
 const post = {
@@ -9,7 +9,7 @@ const post = {
            And her castle in which so many cruel deeds took place fell rapidly into ruin. Rising over the buried dungeons in that god-forsaken wilderness,
            a solitary tower, like some monument to Evil, is all that remains.
            
-           The Countess\' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
+           The Countess' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
            still buried alongside the rotting skulls that bear mute witness to the inhumanity of the human creature.`,
     user: 'anon2',
     score: 6,

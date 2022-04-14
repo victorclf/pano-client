@@ -1,5 +1,5 @@
 import { Menu } from '@mui/icons-material';
-import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, CssBaseline, IconButton, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import './App.css';
 import { Post } from './features/posts/Post';

@@ -1,27 +1,19 @@
 import { Menu } from '@mui/icons-material';
 import { AppBar, CssBaseline, IconButton, Toolbar, Typography } from '@mui/material';
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import { Post } from './features/posts/Post';
+import HomeView from './features/HomeView';
+import NotFoundView from './features/NotFoundView';
+import PostsView from './features/posts/PostsView';
 
 
 function App() {
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
       <div className="App">
-        {/* <header className="App-header"> */}
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        {/* <Counter /> */}
-        {/* <p>Edit <code>src/App.tsx</code> and save to reload.</p> */}
-        {/* </header> */}
-        {/* <Container sx={{ bgcolor: '#cfe8fc' }} maxWidth="md"> */}
-          {/* <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }} /> */}
-          {/* <Box>Post 0</Box> */}
-          {/* <Box>Post 1</Box> */}
-          {/* <Box>Post 2</Box> */}
-        {/* </Container> */}
-        <React.Fragment>
+        <>
           <AppBar position="sticky" sx={{ top: 0, left: 0 }}>
             <Toolbar>
               <IconButton
@@ -39,13 +31,17 @@ function App() {
               {/* <Button color="inherit">Login</Button> */}
             </Toolbar>
           </AppBar>
-        </React.Fragment>
+        </>
 
-        <Post></Post>
-        {/* <PostsList /> */}
-        {/* <Blog></Blog> */}
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomeView />} />
+            <Route path="posts/*" element={<PostsView />} />
+            <Route path="*" element={<NotFoundView />} />
+          </Routes>
+        </BrowserRouter>
       </div>
-    </React.Fragment>
+    </>
   );
 }
 

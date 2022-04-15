@@ -23,32 +23,32 @@ const posts = [
     score: 23,
   },
   {
-    title: 'My first text post...',
+    title: 'My first text post....',
     user: 'anon1',
     score: 6,
   },
   {
-    title: 'Poll: who\'s that?',
+    title: 'Poll: who\'s that??',
     user: 'anon1',
     score: 455,
   },
   {
-    title: '2022 is the END!',
+    title: '2022 is the END!!',
     user: 'anon1',
     score: 23,
   },
   {
-    title: 'My first text post...',
+    title: 'My first text post.....',
     user: 'anon1',
     score: 6,
   },
   {
-    title: 'Poll: who\'s that?',
+    title: 'Poll: who\'s that???',
     user: 'anon1',
     score: 455,
   },
   {
-    title: '2022 is the END!',
+    title: '2022 is the END!!!!',
     user: 'anon1',
     score: 23,
   }
@@ -59,7 +59,6 @@ export const PostsList = () => {
         <Container maxWidth="sm">
           <Stack spacing={1} sx={{pt: 1}}>
             {posts.map((post) => (
-              // <Card key={post.title} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <Card key={post.title} sx={{pt: 0.5}}>
                 <CardContent>
                   <Typography variant="caption"  color="text.secondary">

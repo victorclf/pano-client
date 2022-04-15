@@ -1,5 +1,6 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
 import { Card, CardActions, CardContent, Container, IconButton, Paper, Typography } from "@mui/material"
+import { useLocation, useParams } from "react-router-dom"
 import { Comment } from "./Comment"
 
 const post = {
@@ -57,6 +58,11 @@ const comments = [
 ]
 
 export const Post = () => {
+    const params = useParams();
+
+    // XXX
+    console.log("postId parameter:", params.id);
+
     return (
         <Container maxWidth="md">
             <Card sx={{ mt: 2 }}>

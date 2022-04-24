@@ -4,52 +4,52 @@ import { Card, CardActions, CardContent, Container, IconButton, Stack, Typograph
 const posts = [
   {
     title: 'STICKY: new rules! plz read!',
-    user: 'anon1',
+    author: 'anon1',
     score: 0
   },
   {
     title: 'My first text post...',
-    user: 'anon1',
+    author: 'anon1',
     score: 6,
   },
   {
     title: 'Poll: who\'s that?',
-    user: 'anon1',
+    author: 'anon1',
     score: 455,
   },
   {
     title: '2022 is the END!',
-    user: 'anon1',
+    author: 'anon1',
     score: 23,
   },
   {
     title: 'My first text post....',
-    user: 'anon1',
+    author: 'anon1',
     score: 6,
   },
   {
     title: 'Poll: who\'s that??',
-    user: 'anon1',
+    author: 'anon1',
     score: 455,
   },
   {
     title: '2022 is the END!!',
-    user: 'anon1',
+    author: 'anon1',
     score: 23,
   },
   {
     title: 'My first text post.....',
-    user: 'anon1',
+    author: 'anon1',
     score: 6,
   },
   {
     title: 'Poll: who\'s that???',
-    user: 'anon1',
+    author: 'anon1',
     score: 455,
   },
   {
     title: '2022 is the END!!!!',
-    user: 'anon1',
+    author: 'anon1',
     score: 23,
   }
 ]
@@ -62,7 +62,7 @@ export const PostsList = () => {
               <Card key={post.title} sx={{pt: 0.5}}>
                 <CardContent>
                   <Typography variant="caption"  color="text.secondary">
-                    Posted by {post.user}
+                    Posted by {post.author}
                   </Typography>
                   <Typography paddingTop={0}  variant="h6" color="text.primary">
                     {post.title}

@@ -11,6 +11,11 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+// Start MSW mock when in development environment.
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browser')
+  worker.start()
+}
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container!);

@@ -13,8 +13,11 @@ const post: PostData = {
            
            The Countess' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
            still buried alongside the rotting skulls that bear mute witness to the inhumanity of the human creature.`,
-    author: 'anon2',
-    score: 6,
+    author: {
+        id: 2,
+        username: 'anon2',
+    },
+    score: 6
 }
 
 const comments: Array<CommentData> = [
@@ -61,15 +64,12 @@ const comments: Array<CommentData> = [
 export const Post = () => {
     const params = useParams();
 
-    // XXX
-    console.log("postId parameter:", params.id);
-
     return (
         <Container maxWidth="md">
             <Card sx={{ mt: 2 }}>
                 <CardContent>
                     <Typography variant="caption" color="text.secondary">
-                        Posted by {post.author}
+                        Posted by {post.author.username}
                     </Typography>
                     <Typography paddingTop={0} variant="h6" color="text.primary">
                         {post.title}

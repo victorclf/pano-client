@@ -105,7 +105,7 @@ for (let i = 0; i < NUM_USERS; i++) {
 // ****************
 // *** REST API ***
 // ****************
-export const handlers = [...db.user.toHandlers('rest')]
+export const handlers = [...db.post.toHandlers('rest')]
 // export const handlers = [
 //     rest.post('/login', (req, res, ctx) => {
 //       // Persist user's authentication in the session

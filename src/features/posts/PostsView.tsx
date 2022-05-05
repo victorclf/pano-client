@@ -5,7 +5,7 @@ import { Post } from './Post';
 function PostsView() {
   return (
     <Routes>
-      <Route path=":id" element={<Post />} />
+      <Route path=":postId" element={<Post />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

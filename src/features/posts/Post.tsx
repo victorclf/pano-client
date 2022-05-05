@@ -1,71 +1,26 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, Container, IconButton, Paper, Typography } from "@mui/material"
-import { useLocation, useParams } from "react-router-dom"
+import { Card, CardActions, CardContent, CircularProgress, Container, IconButton, Paper, Typography } from "@mui/material"
+import { useParams } from "react-router-dom"
 import { Comment } from "./Comment"
-import { CommentData, PostData } from "./postSlice"
+import { useGetCommentsQuery, useGetPostQuery } from "./postSlice"
 
-const post: PostData = {
-    id: 1,
-    title: 'The Forgotten Tower',
-    body: `And so it came to pass that the Countess, who once bathed in the rejuvenating blood of a hundred virgins, was buried alive... 
-           And her castle in which so many cruel deeds took place fell rapidly into ruin. Rising over the buried dungeons in that god-forsaken wilderness,
-           a solitary tower, like some monument to Evil, is all that remains.
-           
-           The Countess' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
-           still buried alongside the rotting skulls that bear mute witness to the inhumanity of the human creature.`,
-    author: {
-        id: 2,
-        username: 'anon2',
-    },
-    score: 6
-}
-
-const comments: Array<CommentData> = [
-    {
-        id: 1,
-        author: 'warrior666',
-        body: 'Your death will be avenged!',
-        score: 461,
-        replies: [
-            {
-                id: 2,
-                author: 'anon7',
-                body: '@warrior666 The sanctity of this place has been fouled.',
-                score: 6,
-            },
-            {
-                id: 3,
-                author: 'anon8',
-                body: '@anon7 Hello, my friend. Stay awhile and listen.',
-                score: 2,
-            },
-        ]
-    },
-    {
-        id: 4,
-        author: 'anon4',
-        body: 'you missed the ellipsis at the beginning of the quote',
-        score: 3,
-    },
-    {
-        id: 5,
-        author: 'anon0',
-        body: 'good times',
-        score: 1,
-    },
-    {
-        id: 6,
-        author: 'anon2',
-        body: 'Worst quest in act 1!',
-        score: -99,
-    },
-]
 
 export const Post = () => {
-    const params = useParams();
+    const { postId } = useParams();
+    
+    const {
+        data: post,
+        isSuccess: isSuccessPost,
+    } = useGetPostQuery(postId!);  // router only leads here if postId not null
 
-    return (
-        <Container maxWidth="md">
+    const {
+        data: comments,
+        isSuccess: isSuccessComments,
+    } = useGetCommentsQuery(postId!);  // router only leads here if postId not null
+
+    let postContent;
+    if (isSuccessPost) {
+        postContent = (
             <Card sx={{ mt: 2 }}>
                 <CardContent>
                     <Typography variant="caption" color="text.secondary">
@@ -90,6 +45,14 @@ export const Post = () => {
                     </IconButton>
                 </CardActions>
             </Card>
+        )
+    } else {
+        postContent = <CircularProgress />
+    }
+
+    let commentsContent;
+    if (isSuccessComments) {
+        commentsContent = (
             <Paper sx={{ mt: 3, mb: 3, pb: 1 }}>
                 <Typography padding={2} variant="h6" color="text.primary">
                     {comments.length} comments
@@ -99,6 +62,15 @@ export const Post = () => {
                     <Comment key={comment.id} comment={comment} />
                 ))}
             </Paper>
+        )
+    } else {
+        commentsContent = <CircularProgress />
+    }
+
+    return (
+        <Container maxWidth="md">
+            { postContent } 
+            { commentsContent }
         </Container>
     )
 }

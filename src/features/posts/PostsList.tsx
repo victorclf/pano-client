@@ -1,5 +1,6 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, CircularProgress, Container, IconButton, Stack, Typography } from "@mui/material"
+import { Card, CardActionArea, CardActions, CardContent, CircularProgress, Container, IconButton, Stack, Typography } from "@mui/material"
+import { Link } from "react-router-dom";
 import { useGetPostsQuery } from "./postSlice";
 
 
@@ -19,23 +20,27 @@ export const PostsList = () => {
         content = (
             <>
                 {posts.map((post) => (
-                    <Card key={post.id} sx={{ pt: 0.5 }}>
-                        <CardContent>
-                            <Typography variant="caption" color="text.secondary">
-                                Posted by {post.author.username}
-                            </Typography>
-                            <Typography paddingTop={0} variant="h6" color="text.primary">
-                                {post.title}
-                            </Typography>
-                        </CardContent>
-                        <CardActions disableSpacing sx={{ pt: 0 }}>
-                            <IconButton aria-label="upvote">
+                    <Card key={post.id}>
+                        <Link style={{ textDecoration: 'none' }} to={`/posts/${post.id}`}>
+                            <CardActionArea>
+                                <CardContent sx={{ pt:1, pb: 2 }}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Posted by {post.author.username}
+                                    </Typography>
+                                    <Typography paddingTop={0} variant="h6" color="text.primary">
+                                        {post.title}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Link>
+                        <CardActions disableSpacing sx={{ pt: 0, pb: 0 }}>
+                            <IconButton aria-label="upvote" sx={{pt: 0}}>
                                 <ArrowUpward />
                             </IconButton>
                             <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32 }}>
                                 {post.score}
                             </Typography>
-                            <IconButton aria-label="downvote">
+                            <IconButton aria-label="downvote"  sx={{pt: 0}}>
                                 <ArrowDownward />
                             </IconButton>
                         </CardActions>

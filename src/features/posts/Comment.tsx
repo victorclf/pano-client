@@ -8,7 +8,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
             <Card key={comment.id} sx={{ m: 1, mt: 2 }}>
                 <CardContent sx={{ pb: 0 }}>
                     <Typography variant="subtitle2" color="text.primary">
-                        {comment.author}
+                        {comment.author.username}
                     </Typography>
                     <Typography paddingLeft={1} paddingTop={0.5} variant="body2" color="text.primary">
                         {comment.body}
@@ -31,7 +31,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
                 <Card key={reply.id} sx={{ m: 1, mt: 0, ml: 6 }}>
                     <CardContent sx={{ pb: 0 }}>
                         <Typography variant="subtitle2" color="text.primary">
-                            {reply.author}
+                            {reply.author.username}
                         </Typography>
                         <Typography paddingLeft={1} paddingTop={0.5} variant="body2" color="text.primary">
                             {reply.body}

@@ -1,6 +1,7 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
 import { Card, CardActions, CardContent, CircularProgress, Container, IconButton, Paper, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
+import { useCustomAppBar } from "../gui/useCustomAppBar"
 import { Comment } from "./Comment"
 import { useGetCommentsQuery, useGetPostQuery } from "./postSlice"
 
@@ -17,6 +18,8 @@ export const Post = () => {
         data: comments,
         isSuccess: isSuccessComments,
     } = useGetCommentsQuery(postId!);  // router only leads here if postId not null
+
+    useCustomAppBar(post?.title ?? '', true);
 
     let postContent;
     if (isSuccessPost) {

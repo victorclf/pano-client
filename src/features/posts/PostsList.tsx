@@ -21,7 +21,7 @@ export const PostsList = () => {
             <>
                 {posts.map((post) => (
                     <Card key={post.id}>
-                        <Link style={{ textDecoration: 'none' }} to={`/posts/${post.id}`}>
+                        <Link className="linkButton" to={`/posts/${post.id}`}>
                             <CardActionArea>
                                 <CardContent sx={{ pt:1, pb: 2 }}>
                                     <Typography variant="caption" color="text.secondary">

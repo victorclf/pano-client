@@ -2,7 +2,7 @@ import { CssBaseline } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import styles from './App.module.css';
 import HomeView from './features/HomeView';
-import { MyAppBar } from './features/main/MyAppBar';
+import { MyAppBar } from './features/gui/MyAppBar';
 import NotFoundView from './features/NotFoundView';
 import PostsView from './features/posts/PostsView';
 

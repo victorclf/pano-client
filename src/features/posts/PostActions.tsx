@@ -3,7 +3,7 @@ import { CardActions, IconButton, Skeleton, Typography } from "@mui/material"
 
 export const PostActions = ({score}: {score: number}) => {
     return (
-        <CardActions disableSpacing sx={{ pt: 0 }}>
+        <CardActions disableSpacing sx={{ pt: 0.5, pb: 0.5 }}>
             <IconButton aria-label="upvote">
                 <ArrowUpward />
             </IconButton>

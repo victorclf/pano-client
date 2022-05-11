@@ -94,7 +94,7 @@ const createUserData = () => {
 
 const createPostData = (author) => {
   return {
-    title: faker.lorem.words(),
+    title: faker.lorem.words(4),
     // date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
     author,
     body: faker.lorem.paragraphs(),

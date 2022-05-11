@@ -11,7 +11,7 @@ export const PostTitle = ({title}: {title: string}) => {
 export const PostTitleSkeleton = () => {
     return (
         <Skeleton>
-            <PostTitle title="Title" />
+            <PostTitle title="Title Title Title Title" />
         </Skeleton>
     )
 }

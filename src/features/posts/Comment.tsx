@@ -1,5 +1,5 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, IconButton, Typography } from "@mui/material"
+import { Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material"
 import { CommentData } from "./postSlice"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
@@ -54,3 +54,12 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
     )
 }
 
+export const CommentSkeleton = () => {
+    return (
+        <Skeleton>
+            <Typography variant="body1" color="text.primary">
+                {"haha djah dha dhaksd hahd haskjd hakhd khbh jkbhdkjfs hkjhsdg jkhdfjk gj gjdsfg jkhsglh skjlfghjk hsgj hsg jksfgjk hsfjgh skhgkl sfjghs haha  djah dha dhaksd hahd haskjd hakhd khbh jkbhdkjfs hkjhsdg jkhdfjk gj gjdsfg jkhsglh"}
+            </Typography>
+        </Skeleton>
+    )
+}

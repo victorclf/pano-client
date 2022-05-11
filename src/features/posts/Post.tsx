@@ -1,9 +1,12 @@
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, CircularProgress, Container, IconButton, Paper, Typography } from "@mui/material"
+import { Card, CardContent, Container, Paper, Skeleton, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { useCustomAppBar } from "../gui/useCustomAppBar"
-import { Comment } from "./Comment"
+import { Comment, CommentSkeleton } from "./Comment"
+import { PostActions, PostActionsSkeleton } from "./PostActions"
+import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor"
+import { PostBody, PostBodySkeleton } from "./PostBody"
 import { useGetCommentsQuery, useGetPostQuery } from "./postSlice"
+import { PostTitle, PostTitleSkeleton } from "./PostTitle"
 
 
 export const Post = () => {
@@ -21,37 +24,16 @@ export const Post = () => {
 
     useCustomAppBar(post?.title ?? '', true);
 
-    let postContent;
-    if (isSuccessPost) {
-        postContent = (
+    let postContent = (
             <Card sx={{ mt: 2 }}>
                 <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                        Posted by {post.author.username}
-                    </Typography>
-                    <Typography paddingTop={0} variant="h6" color="text.primary">
-                        {post.title}
-                    </Typography>
-                    <Typography paddingTop={2} variant="body1" color="text.primary">
-                        {post.body}
-                    </Typography>
+                    {isSuccessPost ? <PostAuthor username={post.author.username} /> : <PostAuthorSkeleton />}
+                    {isSuccessPost ? <PostTitle title={post.title} /> : <PostTitleSkeleton />}
+                    {isSuccessPost ? <PostBody body={post.body} /> : <PostBodySkeleton />}
                 </CardContent>
-                <CardActions disableSpacing sx={{ pt: 0 }}>
-                    <IconButton aria-label="upvote">
-                        <ArrowUpward />
-                    </IconButton>
-                    <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32 }}>
-                        {post.score}
-                    </Typography>
-                    <IconButton aria-label="downvote">
-                        <ArrowDownward />
-                    </IconButton>
-                </CardActions>
+                {isSuccessPost ? <PostActions score={post.score} /> : <PostActionsSkeleton />}
             </Card>
-        )
-    } else {
-        postContent = <CircularProgress />
-    }
+    )
 
     let commentsContent;
     if (isSuccessComments) {
@@ -67,7 +49,19 @@ export const Post = () => {
             </Paper>
         )
     } else {
-        commentsContent = <CircularProgress />
+        commentsContent = (
+            <Paper sx={{ mt: 3, mb: 3, p: 2 }}>
+                <Skeleton>
+                    <Typography padding={2} variant="h6" color="text.primary">
+                        comments
+                    </Typography>
+                </Skeleton>
+                
+                {Array.from(new Array(5), (_, i) => (
+                    <CommentSkeleton key={i} />
+                ))}
+            </Paper>
+        )
     }
 
     return (

@@ -1,11 +1,12 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
 import { Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material"
 import { CommentData } from "./postSlice"
+import { CommentActions } from "./CommentActions"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
     return (
         <>
-            <Card key={comment.id} sx={{ m: 1, mt: 2 }}>
+            <Card sx={{ m: 1, mt: 2 }}>
                 <CardContent sx={{ pb: 0 }}>
                     <Typography variant="subtitle2" color="text.primary">
                         {comment.author.username}
@@ -14,17 +15,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
                         {comment.body}
                     </Typography>
                 </CardContent>
-                <CardActions disableSpacing sx={{ pt: 0 }}>
-                    <IconButton aria-label="upvote">
-                        <ArrowUpward />
-                    </IconButton>
-                    <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32 }}>
-                        {comment.score}
-                    </Typography>
-                    <IconButton aria-label="downvote">
-                        <ArrowDownward />
-                    </IconButton>
-                </CardActions>
+                <CommentActions comment={comment} />
             </Card>
 
             {comment.replies?.map((reply) => (
@@ -37,17 +28,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
                             {reply.body}
                         </Typography>
                     </CardContent>
-                    <CardActions disableSpacing sx={{ pt: 0 }}>
-                        <IconButton aria-label="upvote">
-                            <ArrowUpward />
-                        </IconButton>
-                        <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32 }}>
-                            {reply.score}
-                        </Typography>
-                        <IconButton aria-label="downvote">
-                            <ArrowDownward />
-                        </IconButton>
-                    </CardActions>
+                    <CommentActions comment={reply} />
                 </Card>
             ))}
         </>

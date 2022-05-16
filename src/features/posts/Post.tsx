@@ -31,16 +31,20 @@ export const Post = () => {
                     {isSuccessPost ? <PostTitle title={post.title} /> : <PostTitleSkeleton />}
                     {isSuccessPost ? <PostBody body={post.body} /> : <PostBodySkeleton />}
                 </CardContent>
-                {isSuccessPost ? <PostActions score={post.score} /> : <PostActionsSkeleton />}
+                {isSuccessPost ? <PostActions post={post} /> : <PostActionsSkeleton />}
             </Card>
     )
 
+    const numComments = comments
+        ?.map((comment) => 1 + (comment.replies?.length ?? 0))
+        ?.reduce((previousValue, currentValue) => previousValue + currentValue, 0) 
+        ?? 0;
     let commentsContent;
     if (isSuccessComments) {
         commentsContent = (
             <Paper sx={{ mt: 3, mb: 3, pb: 1 }}>
                 <Typography padding={2} variant="h6" color="text.primary">
-                    {comments.length} comments
+                    {numComments} comments
                 </Typography>
 
                 {comments.map((comment) => (

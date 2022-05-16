@@ -1,52 +1,59 @@
-import { factory, oneOf, manyOf, primaryKey } from '@mswjs/data'
+import { factory, oneOf, manyOf, primaryKey, nullable } from '@mswjs/data'
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 
+// mswjs doesnt support finding objects which have a property equal to null
+const NULL_WORKAROUND = "NULL_WORKAROUND";
 
 // ******************
 // *** DATA MODEL ***
 // ******************
 export const db = factory({
-  user: {
-    id: primaryKey(faker.datatype.uuid),
-    username: String,
-    // firstName: String,
-    // lastName: String,
-    // name: String,
-    // posts: manyOf('post'),
-  },
-  post: {
-    id: primaryKey(faker.datatype.uuid),
-    title: String,
-    body: String,
-    score: Number,
-    author: oneOf('user'),
-    // date: String,
-    // reactions: oneOf('reaction'),
-    // comments: manyOf('comment'),
-  },
-  comment: {
-    id: primaryKey(faker.datatype.uuid),
-    body: String,
-    post: oneOf('post'),
-    score: Number,
-    author: {
-      id: Number,
-      username: String,
+    user: {
+        id: primaryKey(faker.datatype.uuid),
+        username: String,
+        // firstName: String,
+        // lastName: String,
+        // name: String,
+        // posts: manyOf('post'),
     },
-    replies: manyOf('comment'),
-    // date: String,
-  },
-  // },
-  // reaction: {
-  //   id: primaryKey(faker.datatype.uuid),
-  //   thumbsUp: Number,
-  //   hooray: Number,
-  //   heart: Number,
-  //   rocket: Number,
-  //   eyes: Number,
-  //   post: oneOf('post'),
-  // },
+    post: {
+        id: primaryKey(faker.datatype.uuid),
+        title: String,
+        body: String,
+        author: oneOf('user'),
+        score: Number,
+        upvoted: Boolean,
+        downvoted: Boolean,
+        // date: String,
+        // reactions: oneOf('reaction'),
+        // comments: manyOf('comment'),
+    },
+    comment: {
+        id: primaryKey(faker.datatype.uuid),
+        body: String,
+        post: oneOf('post'),
+        author: {
+            id: Number,
+            username: String,
+        },
+        replies: manyOf('comment'),
+        parentComment: nullable(faker.datatype.uuid),
+        score: Number,
+        upvoted: Boolean,
+        downvoted: Boolean,
+        // date: String,
+    },
+    // },
+    // reaction: {
+    //   id: primaryKey(faker.datatype.uuid),
+    //   thumbsUp: Number,
+    //   hooray: Number,
+    //   heart: Number,
+    //   rocket: Number,
+    //   eyes: Number,
+    //   post: oneOf('post'),
+    // },
 })
 
 // *****************************
@@ -55,19 +62,19 @@ export const db = factory({
 let useSeededRNG = true;
 // let rng = seedrandom()
 if (useSeededRNG) {
-  let randomSeedString = localStorage.getItem('randomTimestampSeed');
-  let seedDate;
+    let randomSeedString = localStorage.getItem('randomTimestampSeed');
+    let seedDate;
 
-  if (randomSeedString) {
-    seedDate = new Date(randomSeedString);
-  } else {
-    seedDate = new Date();
-    randomSeedString = seedDate.toISOString();
-    localStorage.setItem('randomTimestampSeed', randomSeedString);
-  }
-  // rng = seedrandom(randomSeedString)
-  // setRandom(rng)
-  faker.seed(seedDate.getTime())
+    if (randomSeedString) {
+        seedDate = new Date(randomSeedString);
+    } else {
+        seedDate = new Date();
+        randomSeedString = seedDate.toISOString();
+        localStorage.setItem('randomTimestampSeed', randomSeedString);
+    }
+    // rng = seedrandom(randomSeedString)
+    // setRandom(rng)
+    faker.seed(seedDate.getTime())
 }
 
 
@@ -81,36 +88,41 @@ const MAX_REPLIES_PER_COMMENT = 5
 const MAX_SCORE = 1000
 
 const createUserData = () => {
-  // const firstName = faker.name.firstName()
-  // const lastName = faker.name.lastName()
+    // const firstName = faker.name.firstName()
+    // const lastName = faker.name.lastName()
 
-  return {
-    // firstName,
-    // lastName,
-    // name: `${firstName} ${lastName}`,
-    username: faker.internet.userName(),
-  }
+    return {
+        // firstName,
+        // lastName,
+        // name: `${firstName} ${lastName}`,
+        username: faker.internet.userName(),
+    }
 }
 
 const createPostData = (author) => {
-  return {
-    title: faker.lorem.words(4),
-    // date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
-    author,
-    body: faker.lorem.paragraphs(),
-    score: faker.datatype.number(MAX_SCORE),
-    // reactions: db.reaction.create(),
-  }
+    return {
+        title: faker.lorem.words(4),
+        // date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
+        author,
+        body: faker.lorem.paragraphs(),
+        score: faker.datatype.number(MAX_SCORE),
+        upvoted: false,
+        downvoted: false,
+        // reactions: db.reaction.create(),
+    }
 }
 
-const createCommentData = (post, author) => {
-  return {
-    body: faker.lorem.sentences(),
-    post: post,
-    score: faker.datatype.number(MAX_SCORE),
-    author,
-    replies: []
-  }
+const createCommentData = (post, author, parentComment=NULL_WORKAROUND) => {
+    return {
+        body: faker.lorem.sentences(),
+        post: post,
+        author,
+        replies: [],
+        parentComment: parentComment === NULL_WORKAROUND ? NULL_WORKAROUND : parentComment.id,
+        score: faker.datatype.number(MAX_SCORE),
+        upvoted: false,
+        downvoted: false,
+    }
 }
 
 // let author1 = createUserData()
@@ -121,7 +133,7 @@ const createCommentData = (post, author) => {
 // post1.body = `And so it came to pass that the Countess, who once bathed in the rejuvenating blood of a hundred virgins, was buried alive... 
 //          And her castle in which so many cruel deeds took place fell rapidly into ruin. Rising over the buried dungeons in that god-forsaken wilderness,
 //          a solitary tower, like some monument to Evil, is all that remains.
-         
+
 //          The Countess' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
 //          still buried alongside the rotting skulls that bear mute witness to the inhumanity of the human creature.`;
 // post1 = db.post.create(post1);
@@ -175,26 +187,36 @@ const createCommentData = (post, author) => {
 // Create an initial set of users and posts
 const users = []
 for (let i = 0; i < NUM_USERS; i++) {
-  users.push(db.user.create(createUserData()))
-}  
+    users.push(db.user.create(createUserData()))
+}
 
 // const op = faker.helpers.arrayElement(users);
 for (const op of users) {
-  for (let j = 0; j < POSTS_PER_USER; j++) {
-    const post = db.post.create(createPostData(op));
-    for (let k = 0; k < COMMENTS_PER_POST; k++) {
-      const commenter = faker.helpers.arrayElement(users);
-      const comment = createCommentData(post, commenter);
-      if (k === 0) {
-        for (let l = 0; l < MAX_REPLIES_PER_COMMENT; ++l) {
-          const replier = faker.helpers.arrayElement(users);
-          const reply = db.comment.create(createCommentData(post, replier));
-          comment.replies.push(reply);
+    for (let j = 0; j < POSTS_PER_USER; j++) {
+        const post = db.post.create(createPostData(op));
+        for (let k = 0; k < COMMENTS_PER_POST; k++) {
+            const commenter = faker.helpers.arrayElement(users);
+            let comment = db.comment.create(createCommentData(post, commenter));
+            if (k === 0) {
+                for (let l = 0; l < MAX_REPLIES_PER_COMMENT; ++l) {
+                    const replier = faker.helpers.arrayElement(users);
+                    const reply = db.comment.create(createCommentData(post, replier, comment));
+
+                    comment = db.comment.update({
+                        where: {
+                            id: {
+                                equals: comment.id
+                            }
+                        },
+                        data: {
+                            // Derive the next value from the previous one and the unmodified entity
+                            replies: (prevReplies, comment) => [...prevReplies, reply]
+                        }
+                    });
+                }
+            }
         }
-      }
-      db.comment.create(comment)
     }
-  }
 }
 
 
@@ -204,18 +226,228 @@ for (const op of users) {
 // *** REST API ***
 // ****************
 export const handlers = [
-  ...db.post.toHandlers('rest'),
-    rest.get('/posts/:postId/comments', function (req, res, ctx) {
-      const comments = db.comment.findMany({
-        where: {
-          post: {
-            id: {
-              equals: req.params.postId
-            }
-          }
+    ...db.post.toHandlers('rest'),
+    rest.post('/posts/:postId/upvote', function (req, res, ctx) {
+        const postId = req.params.postId;
+        const post = db.post.findFirst({
+            where: {
+                id: {
+                    equals: postId
+                }
+            },
+        });
+
+        if (!post.upvoted) {
+            const newScore = post.downvoted ? post.score + 2 : post.score + 1;
+
+            db.post.update({
+                where: {
+                    id: {
+                        equals: postId
+                    }
+                },
+                data: {
+                    upvoted: true,
+                    downvoted: false,
+                    score: newScore
+                },
+            });
+            return res(ctx.status(200))
         }
-      });
-      return res(ctx.json(comments));
+
+        return res(ctx.status(400));
+    }),
+
+    rest.post('/posts/:postId/nonvote', function (req, res, ctx) {
+        const postId = req.params.postId;
+        const post = db.post.findFirst({
+            where: {
+                id: {
+                    equals: postId
+                }
+            },
+        });
+
+        if (post.upvoted) {
+            db.post.update({
+                where: {
+                    id: {
+                        equals: postId
+                    }
+                },
+                data: {
+                    upvoted: false,
+                    score: post.score - 1
+                },
+            });
+            return res(ctx.status(200));
+        } else if (post.downvoted) {
+            db.post.update({
+                where: {
+                    id: {
+                        equals: postId
+                    }
+                },
+                data: {
+                    downvoted: false,
+                    score: post.score + 1
+                },
+            });
+            return res(ctx.status(200));
+        }
+
+        return res(ctx.status(400)); // ctx.json(updatedPost));
+    }),
+
+    rest.post('/posts/:postId/downvote', function (req, res, ctx) {
+        const postId = req.params.postId;
+        const post = db.post.findFirst({
+            where: {
+                id: {
+                    equals: postId
+                }
+            },
+        });
+
+        // const updatedPost = 
+        if (!post.downvoted) {
+            const newScore = post.upvoted ? post.score - 2 : post.score - 1;
+
+            db.post.update({
+                where: {
+                    id: {
+                        equals: postId
+                    }
+                },
+                data: {
+                    upvoted: false,
+                    downvoted: true,
+                    score: newScore
+                },
+            });
+            return res(ctx.status(200));
+        }
+
+        return res(ctx.status(400));
+    }),
+
+    rest.get('/posts/:postId/comments', function (req, res, ctx) {
+        const comments = db.comment.findMany({
+            where: {
+                post: {
+                    id: {
+                        equals: req.params.postId
+                    }
+                },
+                parentComment: {
+                    equals: NULL_WORKAROUND
+                },
+            }
+        });
+        return res(ctx.json(comments));
+    }),
+
+    rest.post('/posts/:postId/comments/:commentId/upvote', function (req, res, ctx) {
+        const commentId = req.params.commentId;
+        const comment = db.comment.findFirst({
+            where: {
+                id: {
+                    equals: commentId
+                }
+            },
+        });
+
+        if (!comment.upvoted) {
+            const newScore = comment.downvoted ? comment.score + 2 : comment.score + 1;
+
+            db.comment.update({
+                where: {
+                    id: {
+                        equals: commentId
+                    }
+                },
+                data: {
+                    upvoted: true,
+                    downvoted: false,
+                    score: newScore
+                },
+            });
+            return res(ctx.status(200))
+        }
+
+        return res(ctx.status(400));
+    }),
+
+    rest.post('/posts/:postId/comments/:commentId/nonvote', function (req, res, ctx) {
+        const commentId = req.params.commentId;
+        const comment = db.comment.findFirst({
+            where: {
+                id: {
+                    equals: commentId
+                }
+            },
+        });
+
+        if (comment.upvoted) {
+            db.comment.update({
+                where: {
+                    id: {
+                        equals: commentId
+                    }
+                },
+                data: {
+                    upvoted: false,
+                    score: comment.score - 1
+                },
+            });
+            return res(ctx.status(200));
+        } else if (comment.downvoted) {
+            db.comment.update({
+                where: {
+                    id: {
+                        equals: commentId
+                    }
+                },
+                data: {
+                    downvoted: false,
+                    score: comment.score + 1
+                },
+            });
+            return res(ctx.status(200));
+        }
+
+        return res(ctx.status(400));
+    }),
+
+    rest.post('/posts/:postId/comments/:commentId/downvote', function (req, res, ctx) {
+        const commentId = req.params.commentId;
+        const comment = db.comment.findFirst({
+            where: {
+                id: {
+                    equals: commentId
+                }
+            },
+        });
+
+        if (!comment.downvoted) {
+            const newScore = comment.upvoted ? comment.score - 2 : comment.score - 1;
+
+            db.comment.update({
+                where: {
+                    id: {
+                        equals: commentId
+                    }
+                },
+                data: {
+                    upvoted: false,
+                    downvoted: true,
+                    score: newScore
+                },
+            });
+            return res(ctx.status(200));
+        }
+
+        return res(ctx.status(400));
     }),
 ]
 

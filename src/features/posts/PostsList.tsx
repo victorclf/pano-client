@@ -28,7 +28,7 @@ export const PostsList = () => {
                         </CardContent>
                     </CardActionArea>
                 </Link>
-                <PostActions score={post.score} />
+                <PostActions post={post} />
             </Card>
         ))
         : Array.from(new Array(5), (_, i) => (

@@ -1,33 +1,19 @@
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material"
-import { Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material"
-import { CommentData } from "./postSlice"
+import { Card, Skeleton, Typography } from "@mui/material"
 import { CommentActions } from "./CommentActions"
+import { CommentContent } from "./CommentContent"
+import { CommentData } from "./postSlice"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
     return (
         <>
             <Card sx={{ m: 1, mt: 2 }}>
-                <CardContent sx={{ pb: 0 }}>
-                    <Typography variant="subtitle2" color="text.primary">
-                        {comment.author.username}
-                    </Typography>
-                    <Typography paddingLeft={1} paddingTop={0.5} variant="body2" color="text.primary">
-                        {comment.body}
-                    </Typography>
-                </CardContent>
+                <CommentContent comment={comment} />
                 <CommentActions comment={comment} />
             </Card>
 
             {comment.replies?.map((reply) => (
                 <Card key={reply.id} sx={{ m: 1, mt: 0, ml: 6 }}>
-                    <CardContent sx={{ pb: 0 }}>
-                        <Typography variant="subtitle2" color="text.primary">
-                            {reply.author.username}
-                        </Typography>
-                        <Typography paddingLeft={1} paddingTop={0.5} variant="body2" color="text.primary">
-                            {reply.body}
-                        </Typography>
-                    </CardContent>
+                    <CommentContent comment={reply} />
                     <CommentActions comment={reply} />
                 </Card>
             ))}

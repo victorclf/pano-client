@@ -52,6 +52,7 @@ export const PostActionsSkeleton = () => {
             id: "0",
             username: "abc"
         },
+        date: new Date().toISOString(),
         score: 999,
         upvoted: false,
         downvoted: false

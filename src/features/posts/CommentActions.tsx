@@ -30,7 +30,7 @@ export const CommentActions = ({comment}: {comment: CommentData}) => {
     };
     
     return (
-        <CardActions disableSpacing sx={{ pt: 0 }}>
+        <CardActions disableSpacing >
             <IconButton aria-label="upvote" onClick={upvoteOnClick}>
                 {comment.upvoted ? <ArrowUpward color="primary" /> : <ArrowUpward  />}
             </IconButton>

@@ -19,11 +19,11 @@ export const PostsList = () => {
 
     const content = isSuccess
         ? posts.map((post) => (
-            <Card key={post.id}>
+            <Card id={post.id} key={post.id}>
                 <Link className="linkButton" to={`/posts/${post.id}`}>
                     <CardActionArea>
                         <CardContent>
-                            <PostAuthor username={post.author.username} />
+                            <PostAuthor username={post.author.username} date={post.date} />
                             <PostTitle title={post.title} />
                         </CardContent>
                     </CardActionArea>

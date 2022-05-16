@@ -22,10 +22,10 @@ export const db = factory({
         title: String,
         body: String,
         author: oneOf('user'),
+        date: String,
         score: Number,
         upvoted: Boolean,
         downvoted: Boolean,
-        // date: String,
         // reactions: oneOf('reaction'),
         // comments: manyOf('comment'),
     },
@@ -39,10 +39,10 @@ export const db = factory({
         },
         replies: manyOf('comment'),
         parentComment: nullable(faker.datatype.uuid),
+        date: String,
         score: Number,
         upvoted: Boolean,
         downvoted: Boolean,
-        // date: String,
     },
     // },
     // reaction: {
@@ -86,6 +86,7 @@ const POSTS_PER_USER = 5
 const COMMENTS_PER_POST = 5
 const MAX_REPLIES_PER_COMMENT = 5
 const MAX_SCORE = 1000
+const RECENT_DAYS = 7;
 
 const createUserData = () => {
     // const firstName = faker.name.firstName()
@@ -105,6 +106,7 @@ const createPostData = (author) => {
         // date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
         author,
         body: faker.lorem.paragraphs(),
+        date: faker.date.recent(RECENT_DAYS).toISOString(),
         score: faker.datatype.number(MAX_SCORE),
         upvoted: false,
         downvoted: false,
@@ -119,6 +121,7 @@ const createCommentData = (post, author, parentComment=NULL_WORKAROUND) => {
         author,
         replies: [],
         parentComment: parentComment === NULL_WORKAROUND ? NULL_WORKAROUND : parentComment.id,
+        date: faker.date.between(post.date, new Date()).toISOString(),
         score: faker.datatype.number(MAX_SCORE),
         upvoted: false,
         downvoted: false,

@@ -1,6 +1,7 @@
 import { Card, CardContent, Container, Paper, Skeleton, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { useCustomAppBar } from "../gui/useCustomAppBar"
+import { ServerErrorView } from "../ServerErrorView"
 import { Comment, CommentSkeleton } from "./Comment"
 import { PostActions, PostActionsSkeleton } from "./PostActions"
 import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor"
@@ -14,6 +15,8 @@ export const Post = () => {
     
     const {
         data: post,
+        error,
+        isError,
         isSuccess: isSuccessPost,
     } = useGetPostQuery(postId!);  // router only leads here if postId not null
 
@@ -23,6 +26,11 @@ export const Post = () => {
     } = useGetCommentsQuery(postId!);  // router only leads here if postId not null
 
     useCustomAppBar(post?.title ?? '', true);
+
+    if (isError) {
+        console.log(error);
+        return <ServerErrorView rtkError={error} />
+    }
 
     let postContent = (
             <Card sx={{ mt: 2 }}>

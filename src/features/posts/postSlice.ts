@@ -24,6 +24,11 @@ export interface CommentData extends Votable {
     date: string;
 }
 
+export interface CreatePostData {
+    title: string;
+    body: string;
+}
+
 export interface ShallowPostData extends Votable {
     id: string;
     title: string;
@@ -34,6 +39,8 @@ export interface ShallowPostData extends Votable {
 export interface PostData extends ShallowPostData {
     body: string;
 }
+
+
 
 const updateUpvote = (e?: Votable) => {
     if (e) {
@@ -102,6 +109,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         }),
         getComments: builder.query<CommentData[], string>({
             query: (postId) => `/posts/${postId}/comments`,
+        }),
+        createPost: builder.mutation<PostData, CreatePostData>({
+            query: (newPost) => ({
+                url: '/posts',
+                method: 'POST',
+                body: newPost,
+            }),
+            invalidatesTags: cacher.invalidatesList("Post"),
         }),
         upvote: builder.mutation<void, string>({
             query: (postId) => ({
@@ -178,12 +193,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
-        upvoteComment: builder.mutation<void, {postId: string, commentId: string}>({
-            query: ({postId, commentId}) => ({
+        upvoteComment: builder.mutation<void, { postId: string, commentId: string }>({
+            query: ({ postId, commentId }) => ({
                 url: `/posts/${postId}/comments/${commentId}/upvote`,
                 method: 'POST'
             }),
-            async onQueryStarted({postId, commentId}, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ postId, commentId }, { dispatch, queryFulfilled }) {
                 const getCommentsCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getComments', postId, (comments) => {
                         const comment = findCommentOrReply(comments, commentId);
@@ -197,12 +212,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
-        nonvoteComment: builder.mutation<void, {postId: string, commentId: string}>({
-            query: ({postId, commentId}) => ({
+        nonvoteComment: builder.mutation<void, { postId: string, commentId: string }>({
+            query: ({ postId, commentId }) => ({
                 url: `/posts/${postId}/comments/${commentId}/nonvote`,
                 method: 'POST'
             }),
-            async onQueryStarted({postId, commentId}, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ postId, commentId }, { dispatch, queryFulfilled }) {
                 const getCommentsCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getComments', postId, (comments) => {
                         const comment = findCommentOrReply(comments, commentId);
@@ -216,12 +231,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
-        downvoteComment: builder.mutation<void, {postId: string, commentId: string}>({
-            query: ({postId, commentId}) => ({
+        downvoteComment: builder.mutation<void, { postId: string, commentId: string }>({
+            query: ({ postId, commentId }) => ({
                 url: `/posts/${postId}/comments/${commentId}/downvote`,
                 method: 'POST'
             }),
-            async onQueryStarted({postId, commentId}, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ postId, commentId }, { dispatch, queryFulfilled }) {
                 const getCommentsCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getComments', postId, (comments) => {
                         const comment = findCommentOrReply(comments, commentId);
@@ -242,6 +257,7 @@ export const {
     useGetPostsQuery,
     useGetPostQuery,
     useGetCommentsQuery,
+    useCreatePostMutation,
     useUpvoteMutation,
     useNonvoteMutation,
     useDownvoteMutation,

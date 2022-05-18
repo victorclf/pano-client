@@ -229,7 +229,42 @@ for (const op of users) {
 // *** REST API ***
 // ****************
 export const handlers = [
-    ...db.post.toHandlers('rest'),
+    // ...db.post.toHandlers('rest'),
+    rest.get('/posts', function (req, res, ctx) {
+        const posts = db.post.getAll();
+        return res(ctx.json(posts));
+    }),
+    rest.get('/posts/:postId', function (req, res, ctx) {
+        const post = db.post.findFirst({
+          where: { id: { equals: req.params.postId } },
+        });
+        if (!post) {
+            return res(ctx.status(404));
+        }
+        return res(ctx.json(post));
+    }),
+    rest.post('/posts', function (req, res, ctx) {
+        const postData = req.body;
+
+        // Uncomment to force error on specified input
+        // if (data.content === 'error') {
+        // return res(
+        //     ctx.status(500),
+        //     ctx.json('Server error saving this post!')
+        // )
+        // }
+
+        postData.date = new Date().toISOString();
+
+        // FIXME use authenticated user instead of random
+        const user = db.user.findFirst({
+            where: { id: { notEquals: "ANY" } }
+        });
+        postData.author = user;
+
+        const post = db.post.create(postData);
+        return res(ctx.status(201), ctx.json(post));
+    }),
     rest.post('/posts/:postId/upvote', function (req, res, ctx) {
         const postId = req.params.postId;
         const post = db.post.findFirst({
@@ -452,7 +487,7 @@ export const handlers = [
 
         return res(ctx.status(400));
     }),
-]
+];
 
 // export const handlers = [
 //     rest.post('/login', (req, res, ctx) => {

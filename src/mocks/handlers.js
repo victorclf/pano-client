@@ -1,6 +1,7 @@
 import { factory, oneOf, manyOf, primaryKey, nullable } from '@mswjs/data'
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
+import { compareDesc, parseISO } from 'date-fns';
 
 // mswjs doesnt support finding objects which have a property equal to null
 const NULL_WORKAROUND = "NULL_WORKAROUND";
@@ -114,7 +115,7 @@ const createPostData = (author) => {
     }
 }
 
-const createCommentData = (post, author, parentComment=NULL_WORKAROUND) => {
+const createCommentData = (post, author, parentComment = NULL_WORKAROUND) => {
     return {
         body: faker.lorem.sentences(),
         post: post,
@@ -232,11 +233,12 @@ export const handlers = [
     // ...db.post.toHandlers('rest'),
     rest.get('/posts', function (req, res, ctx) {
         const posts = db.post.getAll();
+        posts.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
         return res(ctx.json(posts));
     }),
     rest.get('/posts/:postId', function (req, res, ctx) {
         const post = db.post.findFirst({
-          where: { id: { equals: req.params.postId } },
+            where: { id: { equals: req.params.postId } },
         });
         if (!post) {
             return res(ctx.status(404));

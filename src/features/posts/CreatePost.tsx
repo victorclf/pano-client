@@ -1,4 +1,4 @@
-import { Button, Container, Stack, TextField } from "@mui/material";
+import { Button, Container, Stack } from "@mui/material";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useNavigate } from "react-router-dom";
 import { useCustomAppBar } from "../gui/useCustomAppBar";
@@ -6,7 +6,7 @@ import { CreatePostData, PostData, useCreatePostMutation } from "./postSlice";
 
 
 export const CreatePost = () => {
-    useCustomAppBar("Create New Post", true);
+    useCustomAppBar("New Post", true);
     const navigate = useNavigate();
     const [addNewPost, { isLoading }] = useCreatePostMutation();
 
@@ -31,7 +31,7 @@ export const CreatePost = () => {
             >
                 <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
                     <TextFieldElement required label="Title" name="title" variant="outlined" fullWidth />
-                    <TextField id="body" label="Text" name="body" variant="outlined" fullWidth multiline minRows={5} />
+                    <TextFieldElement id="body" label="Text" name="body" variant="outlined" fullWidth multiline minRows={5} />
                     <Stack direction="row">
                         <Button type="submit" variant="contained" size="large">Create</Button>
                     </Stack>

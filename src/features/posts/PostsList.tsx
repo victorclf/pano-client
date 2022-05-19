@@ -1,4 +1,5 @@
-import { Card, CardActionArea, CardContent, Container, Stack } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Card, CardActionArea, CardContent, Container, Fab, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { PostActions, PostActionsSkeleton } from "./PostActions";
 import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor";
@@ -44,9 +45,15 @@ export const PostsList = () => {
         ));
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
             <Stack spacing={1} sx={{ pt: 1 }}>
                 {content}
+
+                <Link className="linkButton" to={'/posts/new'}>
+                    <Fab color="primary" aria-label="add" sx={{ m: 0, position: "fixed", top: "auto", left: "auto", bottom: 12, right: 12, zIndex: "modal" }}>
+                        <Add />
+                    </Fab>
+                </Link>
             </Stack>
         </Container>
     )

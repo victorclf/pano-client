@@ -10,7 +10,7 @@ import { useGetCommentsQuery, useGetPostQuery } from "./postSlice"
 import { PostTitle, PostTitleSkeleton } from "./PostTitle"
 
 
-export const Post = () => {
+export const PostView = () => {
     const { postId } = useParams();
     
     const {

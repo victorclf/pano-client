@@ -1,8 +1,8 @@
-import { Card, CardContent, Container, Paper, Skeleton, Typography } from "@mui/material"
+import { Card, CardContent, Container } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { useCustomAppBar } from "../gui/useCustomAppBar"
 import { ServerErrorView } from "../ServerErrorView"
-import { Comment, CommentSkeleton } from "./Comment"
+import { Comments, CommentsSkeleton } from "./Comments"
 import { PostActions, PostActionsSkeleton } from "./PostActions"
 import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor"
 import { PostBody, PostBodySkeleton } from "./PostBody"
@@ -42,39 +42,10 @@ export const Post = () => {
                 {isSuccessPost ? <PostActions post={post} /> : <PostActionsSkeleton />}
             </Card>
     )
-
-    const numComments = comments
-        ?.map((comment) => 1 + (comment.replies?.length ?? 0))
-        ?.reduce((previousValue, currentValue) => previousValue + currentValue, 0) 
-        ?? 0;
-    let commentsContent;
-    if (isSuccessComments) {
-        commentsContent = (
-            <Paper sx={{ mt: 3, mb: 3, pb: 1 }}>
-                <Typography padding={2} variant="h6" color="text.primary">
-                    {numComments} comments
-                </Typography>
-
-                {comments.map((comment) => (
-                    <Comment key={comment.id} comment={comment} />
-                ))}
-            </Paper>
-        )
-    } else {
-        commentsContent = (
-            <Paper sx={{ mt: 3, mb: 3, p: 2 }}>
-                <Skeleton>
-                    <Typography padding={2} variant="h6" color="text.primary">
-                        comments
-                    </Typography>
-                </Skeleton>
-                
-                {Array.from(new Array(5), (_, i) => (
-                    <CommentSkeleton key={i} />
-                ))}
-            </Paper>
-        )
-    }
+    
+    let commentsContent = isSuccessComments 
+        ? <Comments comments={comments} />
+        : <CommentsSkeleton />;
 
     return (
         <Container maxWidth="md">

@@ -5,7 +5,7 @@ import { useCustomAppBar } from "../gui/useCustomAppBar";
 import { CreatePostData, PostData, useCreatePostMutation } from "./postSlice";
 
 
-export const CreatePost = () => {
+export const CreatePostView = () => {
     useCustomAppBar("New Post", true);
     const navigate = useNavigate();
     const [addNewPost, { isLoading }] = useCreatePostMutation();

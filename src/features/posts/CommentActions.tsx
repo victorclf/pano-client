@@ -1,8 +1,8 @@
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { AddComment, ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { CardActions, IconButton, Typography } from "@mui/material";
 import { CommentData, useDownvoteCommentMutation, useNonvoteCommentMutation, useUpvoteCommentMutation } from "./postSlice";
 
-export const CommentActions = ({comment}: {comment: CommentData}) => {
+export const CommentActions = ({comment, onReply}: {comment: CommentData, onReply: () => void}) => {
     const [upvote, {isLoading: isLoadingUpvote}] = useUpvoteCommentMutation();
     const [nonvote, {isLoading: isLoadingNonvote}] = useNonvoteCommentMutation();
     const [downvote, {isLoading: isLoadingDownvote}] = useDownvoteCommentMutation();
@@ -39,6 +39,13 @@ export const CommentActions = ({comment}: {comment: CommentData}) => {
             </Typography>
             <IconButton aria-label="downvote" onClick={downvoteOnClick}>
                 {comment.downvoted ? <ArrowDownward color="primary" /> : <ArrowDownward  />}
+            </IconButton>
+
+            <IconButton aria-label="reply" onClick={onReply} sx={{ml: 1}}>
+                <AddComment />
+                <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32, ml: 0.5 }}>
+                    Reply
+                </Typography>
             </IconButton>
         </CardActions>
     )

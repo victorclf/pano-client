@@ -1,6 +1,7 @@
-import { Paper, Skeleton, Typography } from "@mui/material"
-import { Comment, CommentSkeleton } from "./Comment"
-import { CommentData } from "./postSlice"
+import { Paper, Skeleton, Typography } from "@mui/material";
+import { CommentThread, CommentThreadSkeleton } from "./CommentThread";
+import { CreateCommentForm } from "./CreateCommentForm";
+import { CommentData } from "./postSlice";
 
 
 export const Comments = ({ comments }: { comments: CommentData[] }) => {
@@ -14,8 +15,10 @@ export const Comments = ({ comments }: { comments: CommentData[] }) => {
                 {numComments} comments
             </Typography>
 
+            <CreateCommentForm />
+
             {comments.map((comment) => (
-                <Comment key={comment.id} comment={comment} />
+                <CommentThread key={comment.id} comment={comment} />
             ))}
         </Paper>
     )
@@ -30,9 +33,7 @@ export const CommentsSkeleton = () => {
                 </Typography>
             </Skeleton>
             
-            {Array.from(new Array(5), (_, i) => (
-                <CommentSkeleton key={i} />
-            ))}
+            <CommentThreadSkeleton />
         </Paper>
     )
 }

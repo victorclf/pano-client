@@ -1,24 +1,36 @@
 import { Card, Skeleton, Typography } from "@mui/material"
+import { useState } from "react"
 import { CommentActions } from "./CommentActions"
 import { CommentContent } from "./CommentContent"
+import { CreateCommentForm } from "./CreateCommentForm"
 import { CommentData } from "./postSlice"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
-    return (
-        <>
-            <Card sx={{ m: 1, mt: 2 }}>
-                <CommentContent comment={comment} />
-                <CommentActions comment={comment} />
-            </Card>
+    const [showReplyForm, setShowReplyForm] = useState(false);
+    const onReply = () => {
+        setShowReplyForm((prevState: boolean) => !prevState);
+    };
 
-            {comment.replies?.map((reply) => (
-                <Card key={reply.id} sx={{ m: 1, mt: 0, ml: 6 }}>
-                    <CommentContent comment={reply} />
-                    <CommentActions comment={reply} />
+    // HACK Checking for NULL_WORKAROUND to deal with limitation from mswjs. Remove this later.
+    const isReply = comment.parentComment !== 'NULL_WORKAROUND' ? Boolean(comment.parentComment) : false;
+
+    const topCommentSx = { m: 1, mt: 2 };
+    const replySx = { m: 1, mt: 0, ml: 6 };
+    const cardSx = isReply 
+        ? replySx
+        : topCommentSx;
+    return (
+            <>
+                <Card sx={cardSx}>
+                    <CommentContent comment={comment} />
+                    <CommentActions comment={comment} onReply={onReply} />
                 </Card>
-            ))}
-        </>
-    )
+
+                {showReplyForm 
+                    ? <Card sx={replySx}><CreateCommentForm /></Card>
+                    : ''}
+            </>
+        );
 }
 
 export const CommentSkeleton = () => {

@@ -33,13 +33,14 @@ export const db = factory({
     comment: {
         id: primaryKey(faker.datatype.uuid),
         body: String,
-        post: oneOf('post'),
+        // post: oneOf('post'),
+        postId: faker.datatype.uuid,
         author: {
             id: Number,
             username: String,
         },
         replies: manyOf('comment'),
-        parentComment: nullable(faker.datatype.uuid),
+        parentCommentId: nullable(faker.datatype.uuid),
         date: String,
         score: Number,
         upvoted: Boolean,
@@ -118,10 +119,10 @@ const createPostData = (author) => {
 const createCommentData = (post, author, parentComment = NULL_WORKAROUND) => {
     return {
         body: faker.lorem.sentences(),
-        post: post,
+        postId: post.id,
         author,
         replies: [],
-        parentComment: parentComment === NULL_WORKAROUND ? NULL_WORKAROUND : parentComment.id,
+        parentCommentId: parentComment === NULL_WORKAROUND ? NULL_WORKAROUND : parentComment.id,
         date: faker.date.between(post.date, new Date()).toISOString(),
         score: faker.datatype.number(MAX_SCORE),
         upvoted: false,
@@ -372,14 +373,12 @@ export const handlers = [
     }),
 
     rest.get('/posts/:postId/comments', function (req, res, ctx) {
-        const comments = db.comment.findMany({
+        let comments = db.comment.findMany({
             where: {
-                post: {
-                    id: {
-                        equals: req.params.postId
-                    }
+                postId: {
+                    equals: req.params.postId
                 },
-                parentComment: {
+                parentCommentId: {
                     equals: NULL_WORKAROUND
                 },
             }

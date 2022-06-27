@@ -12,7 +12,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
     };
 
     // HACK Checking for NULL_WORKAROUND to deal with limitation from mswjs. Remove this later.
-    const isReply = comment.parentComment !== 'NULL_WORKAROUND' ? Boolean(comment.parentComment) : false;
+    const isReply = comment.parentCommentId !== 'NULL_WORKAROUND' ? Boolean(comment.parentCommentId) : false;
 
     const topCommentSx = { m: 1, mt: 2 };
     const replySx = { m: 1, mt: 0, ml: 6 };

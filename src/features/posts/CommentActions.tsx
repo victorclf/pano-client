@@ -12,9 +12,9 @@ export const CommentActions = ({comment, onReply}: {comment: CommentData, onRepl
     const upvoteOnClick = () => {
         if (!isLoading) {
             if (!comment.upvoted) {
-                upvote({postId: comment.post.id, commentId: comment.id});
+                upvote({postId:comment.postId, commentId: comment.id});
             } else {
-                nonvote({postId: comment.post.id, commentId: comment.id});
+                nonvote({postId:comment.postId, commentId: comment.id});
             }
         }
     };
@@ -22,9 +22,9 @@ export const CommentActions = ({comment, onReply}: {comment: CommentData, onRepl
     const downvoteOnClick = () => {
         if (!isLoading) {
             if (!comment.downvoted) {
-                downvote({postId: comment.post.id, commentId: comment.id});
+                downvote({postId:comment.postId, commentId: comment.id});
             } else {
-                nonvote({postId: comment.post.id, commentId: comment.id});
+                nonvote({postId:comment.postId, commentId: comment.id});
             }
         }
     };

@@ -15,12 +15,10 @@ export interface ShallowUser {
 export interface CommentData extends Votable {
     id: string;
     body: string;
-    post: {
-        id: string;
-    }
+    postId: string;
     author: ShallowUser;
     replies?: Array<CommentData>;
-    parentComment?: string;
+    parentCommentId?: string;
     date: string;
 }
 

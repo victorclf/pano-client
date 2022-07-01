@@ -383,9 +383,47 @@ export const handlers = [
                 },
             }
         });
+
+        comments.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
+        for (const c of comments) {
+            c.replies.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
+        }
+
         return res(ctx.json(comments));
     }),
+    rest.post('/posts/:postId/comments', function (req, res, ctx) {
+        const requestData = req.body;
 
+        // FIXME use authenticated user instead of random
+        const author = db.user.findFirst({
+            where: { id: { notEquals: "ANY" } }
+        });
+
+        const commentData = {
+            body: requestData.body,
+            postId: req.params.postId,
+            author,
+            replies: [],
+            parentCommentId: !requestData.parentCommentId ? NULL_WORKAROUND : requestData.parentCommentId,
+            date: new Date().toISOString(),
+            score: 0,
+            upvoted: false,
+            downvoted: false,
+        };
+        const comment = db.comment.create(commentData);
+
+        // If reply, add reply to parent comment.
+        if (requestData.parentCommentId) {
+            db.comment.update({
+                where: { id: { equals: requestData.parentCommentId } },
+                data: {
+                    replies: (prevReplies, parentComment) => [...prevReplies, comment],
+                },
+            });
+        }
+
+        return res(ctx.status(201), ctx.json(comment));
+    }),
     rest.post('/posts/:postId/comments/:commentId/upvote', function (req, res, ctx) {
         const commentId = req.params.commentId;
         const comment = db.comment.findFirst({

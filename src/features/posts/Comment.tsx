@@ -10,6 +10,9 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
     const onReply = () => {
         setShowReplyForm((prevState: boolean) => !prevState);
     };
+    const onCommentAdded = () => {
+        setShowReplyForm(false);
+    };
 
     // HACK Checking for NULL_WORKAROUND to deal with limitation from mswjs. Remove this later.
     const isReply = comment.parentCommentId !== 'NULL_WORKAROUND' ? Boolean(comment.parentCommentId) : false;
@@ -27,7 +30,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
                 </Card>
 
                 {showReplyForm 
-                    ? <Card sx={replySx}><CreateCommentForm /></Card>
+                    ? <Card sx={replySx}><CreateCommentForm parentCommentId={isReply ? comment.parentCommentId : comment.id} onCommentAdded={onCommentAdded} /></Card>
                     : ''}
             </>
         );

@@ -12,6 +12,12 @@ export interface ShallowUser {
     username: string;
 }
 
+export interface CreateCommentData {
+    postId: string;
+    body: string;
+    parentCommentId?: string;
+}
+
 export interface CommentData extends Votable {
     id: string;
     body: string;
@@ -107,6 +113,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         }),
         getComments: builder.query<CommentData[], string>({
             query: (postId) => `/posts/${postId}/comments`,
+            providesTags: cacher.cacheByIdArg("Comment"),
         }),
         createPost: builder.mutation<PostData, CreatePostData>({
             query: (newPost) => ({
@@ -115,6 +122,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 body: newPost,
             }),
             invalidatesTags: cacher.invalidatesList("Post"),
+        }),
+        createComment: builder.mutation<CommentData, CreateCommentData>({
+            query: ({postId, ...newComment}) => ({
+                url: `/posts/${postId}/comments`,
+                method: 'POST',
+                body: newComment,
+            }),
+            invalidatesTags: (result, error, arg) => [{type: "Comment", id: arg.postId }],
         }),
         upvote: builder.mutation<void, string>({
             query: (postId) => ({
@@ -256,6 +271,7 @@ export const {
     useGetPostQuery,
     useGetCommentsQuery,
     useCreatePostMutation,
+    useCreateCommentMutation,
     useUpvoteMutation,
     useNonvoteMutation,
     useDownvoteMutation,

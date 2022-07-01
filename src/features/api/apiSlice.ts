@@ -4,6 +4,6 @@ import { cacher } from "../api/rtkQueryCacheUtils";
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery(),
-    tagTypes: [...cacher.defaultTags, 'Post'],
+    tagTypes: [...cacher.defaultTags, 'Post', 'Comment'],
     endpoints: (builder) => ({ })
 });

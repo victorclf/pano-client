@@ -38,7 +38,8 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
             onSuccess={submitForm}
         >
             <Stack direction="column" spacing={2} sx={{ m: 1, mb: 3 }}>
-                <TextFieldElement id="body" label="Add your comment..." name="body" variant="outlined" fullWidth multiline minRows={1} />
+                <TextFieldElement id="body" label="Add your comment..." name="body" validation={{required: 'Comment cannot be empty'}}
+                    variant="outlined" fullWidth multiline minRows={1} />
                 <Stack direction="row-reverse">
                     <Button type="submit" variant="contained" size="medium">Add Comment</Button>
                 </Stack>

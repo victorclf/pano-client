@@ -2,12 +2,13 @@ import { Card, CardContent, Container } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { useCustomAppBar } from "../gui/useCustomAppBar"
 import { ServerErrorView } from "../ServerErrorView"
-import { Comments, CommentsSkeleton } from "./Comments"
+import { Comments, CommentsSkeleton } from "../comments/Comments"
 import { PostActions, PostActionsSkeleton } from "./PostActions"
 import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor"
 import { PostBody, PostBodySkeleton } from "./PostBody"
-import { useGetCommentsQuery, useGetPostQuery } from "./postSlice"
+import { useGetPostQuery } from "./postSlice"
 import { PostTitle, PostTitleSkeleton } from "./PostTitle"
+import { useGetCommentsQuery } from "../comments/commentSlice"
 
 
 export const PostView = () => {

@@ -1,6 +1,6 @@
 import { AddComment, ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { CardActions, IconButton, Typography } from "@mui/material";
-import { CommentData, useDownvoteCommentMutation, useNonvoteCommentMutation, useUpvoteCommentMutation } from "./postSlice";
+import { CommentData, useDownvoteCommentMutation, useNonvoteCommentMutation, useUpvoteCommentMutation } from "./commentSlice";
 
 export const CommentActions = ({comment, onReply}: {comment: CommentData, onReply: () => void}) => {
     const [upvote, {isLoading: isLoadingUpvote}] = useUpvoteCommentMutation();

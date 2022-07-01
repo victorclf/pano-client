@@ -2,7 +2,7 @@ import { Button, Stack } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useParams } from "react-router-dom";
-import { CreateCommentData, useCreateCommentMutation } from "./postSlice";
+import { CreateCommentData, useCreateCommentMutation } from "./commentSlice";
 
 
 export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentCommentId?: string, onCommentAdded?: () => void }) => {

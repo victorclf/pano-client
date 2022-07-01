@@ -1,5 +1,5 @@
 import { Comment, CommentSkeleton } from "./Comment";
-import { CommentData } from "./postSlice"
+import { CommentData } from "./commentSlice"
 
 export const CommentThread = ({ comment }: { comment: CommentData }) => {
     return (

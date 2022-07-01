@@ -3,7 +3,7 @@ import { useState } from "react"
 import { CommentActions } from "./CommentActions"
 import { CommentContent } from "./CommentContent"
 import { CreateCommentForm } from "./CreateCommentForm"
-import { CommentData } from "./postSlice"
+import { CommentData } from "./commentSlice"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
     const [showReplyForm, setShowReplyForm] = useState(false);

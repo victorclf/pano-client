@@ -1,6 +1,6 @@
 import { CardContent, Typography } from "@mui/material"
 import { formatDistanceToNowStrict } from "date-fns";
-import { CommentData } from "./postSlice";
+import { CommentData } from "./commentSlice";
 
 export const CommentContent = ({ comment }: { comment: CommentData }) => {
     return (

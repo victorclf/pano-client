@@ -1,7 +1,7 @@
 import { Paper, Skeleton, Typography } from "@mui/material";
 import { CommentThread, CommentThreadSkeleton } from "./CommentThread";
 import { CreateCommentForm } from "./CreateCommentForm";
-import { CommentData } from "./postSlice";
+import { CommentData } from "./commentSlice";
 
 
 export const Comments = ({ comments }: { comments: CommentData[] }) => {

@@ -1,4 +1,5 @@
 import { Button, Stack } from "@mui/material";
+import { useForm } from "react-hook-form";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useParams } from "react-router-dom";
 import { CreateCommentData, useCreateCommentMutation } from "./postSlice";
@@ -7,6 +8,11 @@ import { CreateCommentData, useCreateCommentMutation } from "./postSlice";
 export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentCommentId?: string, onCommentAdded?: () => void }) => {
     const { postId } = useParams();
     const [addNewComment, { isLoading }] = useCreateCommentMutation();
+    const formContext = useForm<{ body: string }>({
+        defaultValues: {
+            body: ''
+        }
+    });
 
     const submitForm = async (data: CreateCommentData) => {
         if (!isLoading) {
@@ -15,6 +21,7 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
 
             try {
                 await addNewComment(data).unwrap();
+                formContext.reset();
                 if (onCommentAdded) {
                     onCommentAdded();
                 }
@@ -27,7 +34,7 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
 
     return (
         <FormContainer
-            defaultValues={{ body: '' }}
+            formContext={formContext}
             onSuccess={submitForm}
         >
             <Stack direction="column" spacing={2} sx={{ m: 1, mb: 3 }}>

@@ -26,8 +26,8 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
                     onCommentAdded();
                 }
             } catch (err) {
-                // FIXME Show proper error dialog
-                alert('Failed to create new comment: ' + err);
+                // TODO Show proper error dialog
+                alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
             }
         }
     };

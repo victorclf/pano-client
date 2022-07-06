@@ -14,11 +14,10 @@ export const CreatePostView = () => {
         if (!isLoading) {
             try {
                 const newPost: PostData = await addNewPost(data).unwrap();
-
                 navigate("../" + newPost.id);
             } catch (err) {
-                // FIXME Show proper error dialog
-                alert('Failed to save the post: + err');
+                // TODO Show proper error dialog
+                alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
             }
         }
     };

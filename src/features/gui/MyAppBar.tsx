@@ -1,14 +1,25 @@
 import { Menu, ArrowBack } from '@mui/icons-material';
 import { AppBar, IconButton, Toolbar, Typography } from '@mui/material';
+import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useAppSelector } from '../../app/hooks';
 import { selectAppBarShowBackButton, selectAppBarTitle } from './guiSlice';
+import MenuDrawer from './MenuDrawer';
 
 const DEFAULT_APP_TITLE = 'Pano';
 
 export const MyAppBar = () => {
     const title = useAppSelector(selectAppBarTitle);
     const showBackButton = useAppSelector(selectAppBarShowBackButton);
+    const [opened, setOpened] = useState(false);
+
+    const onMenuOpen = () => {
+        setOpened(true);
+    }
+
+    const onMenuClose = () => {
+        setOpened(false);
+    }
 
     let button;
     if (showBackButton) {
@@ -27,15 +38,19 @@ export const MyAppBar = () => {
         )
     } else {
         button = (
-            <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-            >
-                <Menu />
-            </IconButton>
+            <>
+                <IconButton
+                    onClick={onMenuOpen}
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                >
+                    <Menu />
+                </IconButton>
+                <MenuDrawer opened={opened} onClose={onMenuClose} />
+            </>
         )
     }
 

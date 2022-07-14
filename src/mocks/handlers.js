@@ -13,6 +13,7 @@ export const db = factory({
     user: {
         id: primaryKey(faker.datatype.uuid),
         username: String,
+        password: String,
         // firstName: String,
         // lastName: String,
         // name: String,
@@ -46,6 +47,11 @@ export const db = factory({
         upvoted: Boolean,
         downvoted: Boolean,
     },
+    session: {
+        id: primaryKey(faker.datatype.uuid),
+        userId: faker.datatype.uuid,
+        token: faker.datatype.uuid
+    }
     // },
     // reaction: {
     //   id: primaryKey(faker.datatype.uuid),
@@ -79,10 +85,9 @@ if (useSeededRNG) {
     faker.seed(seedDate.getTime())
 }
 
-
-// **************************
-// *** GENERATE MOCK DATA ***
-// **************************
+// *********************************
+// *** GENERATE RANDOM MOCK DATA ***
+// *********************************
 const NUM_USERS = 5
 const POSTS_PER_USER = 5
 const COMMENTS_PER_POST = 5
@@ -99,6 +104,7 @@ const createUserData = () => {
         // lastName,
         // name: `${firstName} ${lastName}`,
         username: faker.internet.userName(),
+        password: faker.internet.password(),
     }
 }
 
@@ -225,11 +231,50 @@ for (const op of users) {
 }
 
 
+// *********************************
+// *** GENERATE CUSTOM MOCK DATA ***
+// *********************************
+// eslint-disable-next-line no-unused-vars
+export const testAuthenticatedUser = db.user.create({
+    username: 'jcd',
+    password: 'bionicman'
+});
+export const testAuthenticatedUserSession = db.session.create({
+    userId: testAuthenticatedUser.id,
+    token: '123456'
+});
 
 
 // ****************
 // *** REST API ***
 // ****************
+const getSessionFromRequest = (req) => {
+    const headers = req.headers.all();
+    const token = headers.authorization.match(/Bearer (.*)/)?.[1];
+    if (!token) {
+        return null;
+    }
+    return db.session.findFirst({
+        where: {
+            token: { equals: token },
+        },
+    });
+};
+
+const getUserFromRequest = (req) => {
+    const session = getSessionFromRequest(req);
+    const user = db.user.findFirst({
+        where: {
+            id: { equals: session.userId },
+        },
+    });
+    return user ?? null;
+};
+
+const hasValidToken = (req) => {
+    return Boolean(getSessionFromRequest(req));
+};
+
 export const handlers = [
     // ...db.post.toHandlers('rest'),
     rest.get('/posts', function (req, res, ctx) {
@@ -247,28 +292,23 @@ export const handlers = [
         return res(ctx.json(post));
     }),
     rest.post('/posts', function (req, res, ctx) {
+        const user = getUserFromRequest(req);
+        if (!user) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+        
         const postData = req.body;
-
-        // Uncomment to force error on specified input
-        // if (data.content === 'error') {
-        // return res(
-        //     ctx.status(500),
-        //     ctx.json('Server error saving this post!')
-        // )
-        // }
-
         postData.date = new Date().toISOString();
-
-        // FIXME use authenticated user instead of random
-        const user = db.user.findFirst({
-            where: { id: { notEquals: "ANY" } }
-        });
         postData.author = user;
-
         const post = db.post.create(postData);
+
         return res(ctx.status(201), ctx.json(post));
     }),
     rest.post('/posts/:postId/upvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const postId = req.params.postId;
         const post = db.post.findFirst({
             where: {
@@ -300,6 +340,10 @@ export const handlers = [
     }),
 
     rest.post('/posts/:postId/nonvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const postId = req.params.postId;
         const post = db.post.findFirst({
             where: {
@@ -341,6 +385,10 @@ export const handlers = [
     }),
 
     rest.post('/posts/:postId/downvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const postId = req.params.postId;
         const post = db.post.findFirst({
             where: {
@@ -392,12 +440,12 @@ export const handlers = [
         return res(ctx.json(comments));
     }),
     rest.post('/posts/:postId/comments', function (req, res, ctx) {
-        const requestData = req.body;
+        const author = getUserFromRequest(req);
+        if (!author) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
 
-        // FIXME use authenticated user instead of random
-        const author = db.user.findFirst({
-            where: { id: { notEquals: "ANY" } }
-        });
+        const requestData = req.body;
 
         const commentData = {
             body: requestData.body,
@@ -425,6 +473,10 @@ export const handlers = [
         return res(ctx.status(201), ctx.json(comment));
     }),
     rest.post('/posts/:postId/comments/:commentId/upvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const commentId = req.params.commentId;
         const comment = db.comment.findFirst({
             where: {
@@ -456,6 +508,10 @@ export const handlers = [
     }),
 
     rest.post('/posts/:postId/comments/:commentId/nonvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const commentId = req.params.commentId;
         const comment = db.comment.findFirst({
             where: {
@@ -497,6 +553,10 @@ export const handlers = [
     }),
 
     rest.post('/posts/:postId/comments/:commentId/downvote', function (req, res, ctx) {
+        if (!hasValidToken(req)) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
         const commentId = req.params.commentId;
         const comment = db.comment.findFirst({
             where: {
@@ -526,36 +586,32 @@ export const handlers = [
 
         return res(ctx.status(400));
     }),
+    
+    rest.post('/auth/login', (req, res, ctx) => {
+        const user = db.user.findFirst({
+            where: {
+                username: { equals: req.params.username },
+                password: { equals: req.params.password },
+            },
+        });
+        if (!user) {
+            return res(ctx.status(401), ctx.json({ message: `Invalid username/password` }));
+        }
+        
+        const token = faker.datatype.uuid();
+        db.session.create({ userId: user.id, token });
+        
+        return res(ctx.json({ user, token }));
+    }),
+
+    rest.post('/auth/logout', (req, res, ctx) => {
+        const session = getSessionFromRequest();
+        if (!session) {
+            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+        
+        db.session.delete({ where: { id: { equals: session.id } } });
+        
+        return res(ctx.status(204));
+    }),
 ];
-
-// export const handlers = [
-//     rest.post('/login', (req, res, ctx) => {
-//       // Persist user's authentication in the session
-//       sessionStorage.setItem('is-authenticated', 'true')
-//       return res(
-//         // Respond with a 200 status code
-//         ctx.status(200),
-//       )
-//     }),
-//     rest.get('/user', (req, res, ctx) => {
-//       // Check if the user is authenticated in this session
-//       const isAuthenticated = sessionStorage.getItem('is-authenticated')
-//       if (!isAuthenticated) {
-//         // If not authenticated, respond with a 403 error
-//         return res(
-//           ctx.status(403),
-//           ctx.json({
-//             errorMessage: 'Not authorized',
-//           }),
-//         )
-//       }
-//       // If authenticated, return a mocked user details
-//       return res(
-//         ctx.status(200),
-//         ctx.json({
-//           username: 'admin',
-//         }),
-//       )
-//     }),
-//   ]
-

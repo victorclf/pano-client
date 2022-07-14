@@ -1,10 +1,12 @@
 import { Action, combineReducers, configureStore, PreloadedState, ThunkAction } from '@reduxjs/toolkit';
 import { apiSlice } from '../features/api/apiSlice';
 import guiSliceReducer from '../features/gui/guiSlice';
+import authSliceReducer from '../features/auth/authSlice';
 
 const rootReducer = combineReducers({
     [apiSlice.reducerPath]: apiSlice.reducer,
-    gui: guiSliceReducer
+    gui: guiSliceReducer,
+    auth: authSliceReducer
 });
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {

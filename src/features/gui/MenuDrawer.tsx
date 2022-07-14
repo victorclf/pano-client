@@ -9,8 +9,33 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { useAuth } from '../auth/useAuth';
 
 export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClose: () => void }) {
+    const { user } = useAuth();
+
+    const userDisplay = user
+        ? (<List>
+                <ListItem key={user!.username} >
+                    {/* <ListItemButton> */}
+                        <ListItemAvatar>
+                            <Avatar>{user!.username[0].toUpperCase()}</Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={user!.username} secondary={'117 points'} />
+                    {/* </ListItemButton> */}
+                </ListItem>
+            </List>)
+        : (<List>
+            <ListItem key={'signin'} disablePadding >
+                <ListItemButton>
+                    <ListItemIcon>
+                        <Avatar></Avatar>
+                    </ListItemIcon>
+                    <ListItemText primary={'Sign In'} />
+                </ListItemButton>
+            </ListItem>
+            </List>);
+    
     return (
         <div>
             <>
@@ -25,17 +50,10 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                         onClick={onClose}
                         // onKeyDown={closeMenu}
                     >
-                        <List>
-                            <ListItem key={'Username.Here'} >
-                                {/* <ListItemButton> */}
-                                    <ListItemAvatar>
-                                        <Avatar>U</Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={'Username.Here'} secondary={'117 points'} />
-                                {/* </ListItemButton> */}
-                            </ListItem>
-                        </List>
+                        {userDisplay}   
+
                         <Divider />
+                        
                         <List>
                             <ListItem key={'inbox'} disablePadding >
                                 <ListItemButton>

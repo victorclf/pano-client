@@ -250,7 +250,7 @@ export const testAuthenticatedUserSession = db.session.create({
 // ****************
 const getSessionFromRequest = (req) => {
     const headers = req.headers.all();
-    const token = headers.authorization.match(/Bearer (.*)/)?.[1];
+    const token = headers.authorization?.match(/Bearer (.*)/)?.[1];
     if (!token) {
         return null;
     }
@@ -605,7 +605,7 @@ export const handlers = [
     }),
 
     rest.post('/auth/logout', (req, res, ctx) => {
-        const session = getSessionFromRequest();
+        const session = getSessionFromRequest(req);
         if (!session) {
             return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }

@@ -30,7 +30,7 @@ const authSlice = createSlice({
     reducers: {
         setCredentials: (
             state,
-            { payload: { user, token } }: PayloadAction<{ user: User; token: string }>
+            { payload: { user, token } }: PayloadAction<{ user: User | null; token: string | null }>
         ) => {
             state.user = user;
             state.token = token;
@@ -47,11 +47,18 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 body: credentials,
             }),
         }),
+        logout: builder.mutation<void, void>({
+            query: () => ({
+                url: '/auth/logout',
+                method: 'POST'
+            }),
+        }),
     })
 });
 
 export const {
-    useLoginMutation } = extendedApiSlice;
+    useLoginMutation,
+    useLogoutMutation } = extendedApiSlice;
 
 export const { setCredentials } = authSlice.actions;
 

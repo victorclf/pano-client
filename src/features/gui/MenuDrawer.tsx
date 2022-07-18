@@ -1,4 +1,3 @@
-import MailIcon from '@mui/icons-material/Mail';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { Avatar, ListItemAvatar } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -10,6 +9,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useAuth } from '../auth/useAuth';
+import MenuLogout from './MenuLogout';
 
 export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClose: () => void }) {
     const { user } = useAuth();
@@ -31,7 +31,7 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                     <ListItemIcon>
                         <Avatar></Avatar>
                     </ListItemIcon>
-                    <ListItemText primary={'Sign In'} />
+                    <ListItemText primary={'Log In'} />
                 </ListItemButton>
             </ListItem>
             </List>);
@@ -63,14 +63,8 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                                     <ListItemText primary={'Inbox'} />
                                 </ListItemButton>
                             </ListItem>
-                            <ListItem key={'Log out'} disablePadding >
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <MailIcon></MailIcon>
-                                    </ListItemIcon>
-                                    <ListItemText primary={'Log out'} />
-                                </ListItemButton>
-                            </ListItem>
+
+                            <MenuLogout></MenuLogout>
                         </List>
                     </Box>
                 </Drawer>

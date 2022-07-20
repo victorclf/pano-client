@@ -8,11 +8,13 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import MenuLogout from './MenuLogout';
 
 export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClose: () => void }) {
     const { user } = useAuth();
+    const location = useLocation();
 
     const userDisplay = user
         ? (<List>
@@ -26,14 +28,17 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                 </ListItem>
             </List>)
         : (<List>
-            <ListItem key={'signin'} disablePadding >
-                <ListItemButton>
-                    <ListItemIcon>
-                        <Avatar></Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary={'Log In'} />
-                </ListItemButton>
+            <Link className="linkButton" to={'/login'} state={{from: location}}>
+            <ListItem key={'login'} disablePadding >
+                
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <Avatar></Avatar>
+                        </ListItemIcon>
+                        <ListItemText primary={'Log In'} />
+                    </ListItemButton>
             </ListItem>
+            </Link>
             </List>);
     
     return (

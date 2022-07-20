@@ -5,6 +5,7 @@ import { MyAppBar } from './features/gui/MyAppBar';
 import HomeView from './features/HomeView';
 import NotFoundView from './features/NotFoundView';
 import PostsView from './features/posts/PostsView';
+import LoginView from './features/auth/LoginView';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MyAppBar />}>
               <Route path="posts/*" element={<PostsView />} />
+              <Route path="login" element={<LoginView />} />
               <Route index element={<HomeView />} />
               <Route path="*" element={<NotFoundView />} />
             </Route>

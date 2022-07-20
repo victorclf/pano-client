@@ -590,8 +590,8 @@ export const handlers = [
     rest.post('/auth/login', (req, res, ctx) => {
         const user = db.user.findFirst({
             where: {
-                username: { equals: req.params.username },
-                password: { equals: req.params.password },
+                username: { equals: req.body.username },
+                password: { equals: req.body.password },
             },
         });
         if (!user) {

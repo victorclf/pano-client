@@ -24,7 +24,7 @@ export const MyAppBar = () => {
     let button;
     if (showBackButton) {
         button = (
-            <Link className="linkButton" to={'../'}>
+            <Link className="linkButton" to={-1 as any}>
             <IconButton
                 size="large"
                 edge="start"

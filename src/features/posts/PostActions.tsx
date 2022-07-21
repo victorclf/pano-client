@@ -1,15 +1,17 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { CardActions, IconButton, Skeleton, Typography } from "@mui/material";
+import { useAuth } from "../auth/useAuth";
 import { ShallowPostData, useDownvoteMutation, useNonvoteMutation, useUpvoteMutation } from "./postSlice";
 
 export const PostActions = ({post}: {post: ShallowPostData}) => {
+    const { protectFunction } = useAuth();
     const [upvote, {isLoading: isLoadingUpvote}] = useUpvoteMutation();
     const [nonvote, {isLoading: isLoadingNonvote}] = useNonvoteMutation();
     const [downvote, {isLoading: isLoadingDownvote}] = useDownvoteMutation();
 
     const isLoading = isLoadingUpvote && isLoadingNonvote && isLoadingDownvote;
 
-    const upvoteOnClick = () => {
+    const upvoteOnClick = protectFunction(() => {
         if (!isLoading) {
             if (!post.upvoted) {
                 upvote(post.id);
@@ -17,9 +19,9 @@ export const PostActions = ({post}: {post: ShallowPostData}) => {
                 nonvote(post.id);
             }
         }
-    };
+    });
 
-    const downvoteOnClick = () => {
+    const downvoteOnClick = protectFunction(() => {
         if (!isLoading) {
             if (!post.downvoted) {
                 downvote(post.id);
@@ -27,7 +29,7 @@ export const PostActions = ({post}: {post: ShallowPostData}) => {
                 nonvote(post.id);
             }
         }
-    };
+    });
     
     return (
         <CardActions disableSpacing sx={{ pt: 0.5, pb: 0.5 }}>

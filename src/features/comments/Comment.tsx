@@ -4,12 +4,14 @@ import { CommentActions } from "./CommentActions"
 import { CommentContent } from "./CommentContent"
 import { CreateCommentForm } from "./CreateCommentForm"
 import { CommentData } from "./commentSlice"
+import { useAuth } from "../auth/useAuth"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
+    const { protectFunction } = useAuth();
     const [showReplyForm, setShowReplyForm] = useState(false);
-    const onReply = () => {
+    const onReply = protectFunction(() => {
         setShowReplyForm((prevState: boolean) => !prevState);
-    };
+    });
     const onCommentAdded = () => {
         setShowReplyForm(false);
     };

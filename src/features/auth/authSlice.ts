@@ -20,7 +20,7 @@ type AuthState = {
     token: string | null;
 };
 
-const initialState = (process.env.NODE_ENV === 'development')
+const initialState = (['development', 'test'].includes(process.env.NODE_ENV))
     ? { user: testAuthenticatedUser, token: testAuthenticatedUserSession.token } as AuthState
     : { user: null, token: null } as AuthState;
 

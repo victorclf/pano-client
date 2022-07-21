@@ -1,11 +1,14 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useParams } from "react-router-dom";
+import LinkToLogin from "../auth/LinkToLogin";
+import { useAuth } from "../auth/useAuth";
 import { CreateCommentData, useCreateCommentMutation } from "./commentSlice";
 
 
 export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentCommentId?: string, onCommentAdded?: () => void }) => {
+    const { loggedIn } = useAuth();
     const { postId } = useParams();
     const [addNewComment, { isLoading }] = useCreateCommentMutation();
     const formContext = useForm<{ body: string }>({
@@ -32,13 +35,24 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
         }
     };
 
+    if (!loggedIn) {
+        return (
+            <Stack direction="column" spacing={2} sx={{ m: 3 }}>
+                <LinkToLogin>
+                    <Typography variant="subtitle2" color="text.primary">
+                        You must be logged in to comment.
+                    </Typography>
+                </LinkToLogin>
+            </Stack>
+        )
+    }
     return (
         <FormContainer
             formContext={formContext}
             onSuccess={submitForm}
         >
             <Stack direction="column" spacing={2} sx={{ m: 1, mb: 3 }}>
-                <TextFieldElement id="body" label="Add your comment..." name="body" validation={{required: 'Comment cannot be empty'}}
+                <TextFieldElement id="body" label="Add your comment..." name="body" validation={{ required: 'Comment cannot be empty' }}
                     variant="outlined" fullWidth multiline minRows={1} />
                 <Stack direction="row-reverse">
                     <Button type="submit" variant="contained" size="medium">Add Comment</Button>

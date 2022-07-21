@@ -29,15 +29,14 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
             </List>)
         : (<List>
             <Link className="linkButton" to={'/login'} state={{from: location}}>
-            <ListItem key={'login'} disablePadding >
-                
+                <ListItem key={'login'} disablePadding >
                     <ListItemButton>
                         <ListItemIcon>
                             <Avatar></Avatar>
                         </ListItemIcon>
                         <ListItemText primary={'Log In'} />
                     </ListItemButton>
-            </ListItem>
+                </ListItem>
             </Link>
             </List>);
     

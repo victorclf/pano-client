@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { PrivateOutlet } from '../auth/PrivateOutlet';
+import { PrivateComponent } from '../auth/PrivateComponent';
 import { CreatePostView } from './CreatePostView';
 import { PostView } from './PostView';
 
@@ -7,9 +7,7 @@ import { PostView } from './PostView';
 function PostsRoutes() {
     return (
         <Routes>
-            <Route path="new" element={<PrivateOutlet />}>
-                <Route index element={<CreatePostView />} />
-            </Route>
+            <Route path="new" element={<PrivateComponent><CreatePostView /></PrivateComponent>} />
             <Route path=":postId" element={<PostView />} />
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

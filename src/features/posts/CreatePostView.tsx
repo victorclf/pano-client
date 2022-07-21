@@ -14,7 +14,7 @@ export const CreatePostView = () => {
         if (!isLoading) {
             try {
                 const newPost: PostData = await addNewPost(data).unwrap();
-                navigate("../" + newPost.id);
+                navigate("../" + newPost.id, { replace: true });
             } catch (err) {
                 // TODO Show proper error dialog
                 alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));

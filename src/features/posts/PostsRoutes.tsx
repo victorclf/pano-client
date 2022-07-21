@@ -4,7 +4,7 @@ import { CreatePostView } from './CreatePostView';
 import { PostView } from './PostView';
 
 
-function PostsView() {
+function PostsRoutes() {
     return (
         <Routes>
             <Route path="new" element={<PrivateOutlet />}>
@@ -16,4 +16,4 @@ function PostsView() {
     );
 }
 
-export default PostsView;
+export default PostsRoutes;

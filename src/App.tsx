@@ -4,7 +4,7 @@ import styles from './App.module.css';
 import { MyAppBar } from './features/gui/MyAppBar';
 import HomeView from './features/HomeView';
 import NotFoundView from './features/NotFoundView';
-import PostsView from './features/posts/PostsView';
+import PostsRoutes from './features/posts/PostsRoutes';
 import LoginView from './features/auth/LoginView';
 
 
@@ -15,7 +15,7 @@ function App() {
       <div className={styles.App}>
           <Routes>
             <Route path="/" element={<MyAppBar />}>
-              <Route path="posts/*" element={<PostsView />} />
+              <Route path="posts/*" element={<PostsRoutes />} />
               <Route path="login" element={<LoginView />} />
               <Route index element={<HomeView />} />
               <Route path="*" element={<NotFoundView />} />

@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import NavigateToLogin from './NavigateToLogin';
 import { useAuth } from './useAuth';
 
 export function PrivateComponent({children}: {children: ReactNode}) {
@@ -10,5 +11,5 @@ export function PrivateComponent({children}: {children: ReactNode}) {
                 {children}
             </>
         )
-        : null;
+        : <NavigateToLogin />;
 }

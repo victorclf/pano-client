@@ -5,7 +5,7 @@ import { useNavigateToLogin } from './useNavigateToLogin';
 
 export const useAuth = () => {
     const user = useSelector(selectCurrentUser);
-    const { navigateToLogin } = useNavigateToLogin();
+    const navigateToLogin = useNavigateToLogin();
 
     const protectFunction = useCallback(
         (f: Function) => {

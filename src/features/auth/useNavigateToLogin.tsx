@@ -4,10 +4,8 @@ export const useNavigateToLogin = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    return {
-        navigateToLogin: () => { 
+    return () => { 
             navigate("/login", { state: { from: location } });
-        }
-    };
+        };
 };
 

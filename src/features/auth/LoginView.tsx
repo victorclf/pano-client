@@ -3,7 +3,7 @@ import { FormContainer, PasswordElement, TextFieldElement } from "react-hook-for
 import { Location, Navigate, useLocation } from "react-router-dom";
 import { useAppDispatch } from '../../app/hooks';
 import { testAuthenticatedUser } from "../../mocks/handlers";
-import { LoginRequest, LoginResponse, setCredentials, useLoginMutation } from "../auth/authSlice";
+import { LoginRequest, LoginResponse, loggedIn, useLoginMutation } from "../auth/authSlice";
 import { useCustomAppBar } from "../gui/useCustomAppBar";
 import { useAuth } from "./useAuth";
 
@@ -12,7 +12,7 @@ export interface RedirectLocationState {
 }
 
 export default function LoginView() {
-    const { loggedIn } = useAuth();
+    const { loggedIn: isLoggedIn } = useAuth();
     useCustomAppBar("Log In", true);
     const dispatch = useAppDispatch();
     const [login, { isLoading }] = useLoginMutation();
@@ -22,7 +22,7 @@ export default function LoginView() {
         if (!isLoading) {
             try {
                 const loginResponse: LoginResponse = await login(data).unwrap();
-                dispatch(setCredentials(loginResponse));
+                dispatch(loggedIn(loginResponse));
                 // Navigation is handled by the <Navigate> component during rerender with a valid user.
             } catch (err) {
                 // TODO Show proper error dialog
@@ -31,7 +31,7 @@ export default function LoginView() {
         }
     };
 
-    if (loggedIn) {
+    if (isLoggedIn) {
         return <Navigate to={(location.state as RedirectLocationState)?.from?.pathname ?? "/"} replace />
     }
     return (

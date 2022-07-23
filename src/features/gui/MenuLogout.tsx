@@ -4,7 +4,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useAppDispatch } from '../../app/hooks';
-import { setCredentials, useLogoutMutation } from '../auth/authSlice';
+import { loggedOut, useLogoutMutation } from '../auth/authSlice';
 import { useAuth } from '../auth/useAuth';
 
 export default function MenuLogout() {
@@ -16,7 +16,7 @@ export default function MenuLogout() {
         if (!isLoading) {
             try {
                 await logout().unwrap();
-                dispatch(setCredentials({user: null, token: null}));
+                dispatch(loggedOut());
             } catch (err) {
                 // TODO Show proper error dialog
                 alert('Failed to logout! \n\n' + JSON.stringify(err, null, 2));

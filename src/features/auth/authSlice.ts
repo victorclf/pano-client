@@ -28,12 +28,16 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setCredentials: (
+        loggedIn: (
             state,
-            { payload: { user, token } }: PayloadAction<{ user: User | null; token: string | null }>
+            { payload: { user, token } }: PayloadAction<{ user: User; token: string }>
         ) => {
             state.user = user;
             state.token = token;
+        },
+        loggedOut: (state) => {
+            state.user = null;
+            state.token = null;
         },
     },
 });
@@ -60,7 +64,7 @@ export const {
     useLoginMutation,
     useLogoutMutation } = extendedApiSlice;
 
-export const { setCredentials } = authSlice.actions;
+export const { loggedIn, loggedOut } = authSlice.actions;
 
 export default authSlice.reducer;
 

@@ -1,7 +1,9 @@
 import { Button, Stack, Typography } from "@mui/material";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { useForm } from "react-hook-form";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useParams } from "react-router-dom";
+import { useHandleDefaultAPIError } from "../api/useHandleDefaultAPIError";
 import LinkToLogin from "../auth/LinkToLogin";
 import { useAuth } from "../auth/useAuth";
 import { CreateCommentData, useCreateCommentMutation } from "./commentSlice";
@@ -16,6 +18,7 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
             body: ''
         }
     });
+    const handleDefaultAPIError = useHandleDefaultAPIError();
 
     const submitForm = async (data: CreateCommentData) => {
         if (!isLoading) {
@@ -29,8 +32,10 @@ export const CreateCommentForm = ({ parentCommentId, onCommentAdded }: { parentC
                     onCommentAdded();
                 }
             } catch (err) {
-                // TODO Show proper error dialog
-                alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
+                if (!handleDefaultAPIError(err as FetchBaseQueryError)) {
+                    // TODO Show proper error dialog
+                    alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
+                }
             }
         }
     };

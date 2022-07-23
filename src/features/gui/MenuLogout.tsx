@@ -3,6 +3,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { useAppDispatch } from '../../app/hooks';
 import { loggedOut, useLogoutMutation } from '../auth/authSlice';
 import { useAuth } from '../auth/useAuth';
@@ -18,8 +19,10 @@ export default function MenuLogout() {
                 await logout().unwrap();
                 dispatch(loggedOut());
             } catch (err) {
-                // TODO Show proper error dialog
-                alert('Failed to logout! \n\n' + JSON.stringify(err, null, 2));
+                if ((err as FetchBaseQueryError)?.status !== 401) {
+                    // TODO Show proper error dialog
+                    alert('Failed to logout! \n\n' + JSON.stringify(err, null, 2));
+                }
             }
         }
     };

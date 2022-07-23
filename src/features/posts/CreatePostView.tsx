@@ -1,6 +1,8 @@
 import { Button, Container, Stack } from "@mui/material";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { FormContainer, TextFieldElement } from "react-hook-form-mui";
 import { useNavigate } from "react-router-dom";
+import { useHandleDefaultAPIError } from "../api/useHandleDefaultAPIError";
 import { useCustomAppBar } from "../gui/useCustomAppBar";
 import { CreatePostData, PostData, useCreatePostMutation } from "./postSlice";
 
@@ -8,6 +10,7 @@ import { CreatePostData, PostData, useCreatePostMutation } from "./postSlice";
 export const CreatePostView = () => {
     useCustomAppBar("New Post", true);
     const navigate = useNavigate();
+    const handleDefaultAPIError = useHandleDefaultAPIError();
     const [addNewPost, { isLoading }] = useCreatePostMutation();
 
     const submitForm = async (data: CreatePostData) => {
@@ -16,8 +19,10 @@ export const CreatePostView = () => {
                 const newPost: PostData = await addNewPost(data).unwrap();
                 navigate("../" + newPost.id, { replace: true });
             } catch (err) {
-                // TODO Show proper error dialog
-                alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
+                if (!handleDefaultAPIError(err as FetchBaseQueryError)) {
+                    // TODO Show proper error dialog
+                    alert('Failed to save the post! \n\n' + JSON.stringify(err, null, 2));
+                }
             }
         }
     };

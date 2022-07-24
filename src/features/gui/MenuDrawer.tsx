@@ -1,4 +1,5 @@
 import InboxIcon from '@mui/icons-material/MoveToInbox';
+import InfoIcon from '@mui/icons-material/Info';
 import { Avatar, ListItemAvatar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -60,17 +61,32 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                         
                         <List>
                             <Link className="linkButton" to={'/messages'}>
-                            <ListItem key={'inbox'} disablePadding >
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <InboxIcon></InboxIcon>
-                                    </ListItemIcon>
-                                    <ListItemText primary={'Inbox'} />
-                                </ListItemButton>
-                            </ListItem>
+                                <ListItem key={'inbox'} disablePadding >
+                                    <ListItemButton>
+                                        <ListItemIcon>
+                                            <InboxIcon></InboxIcon>
+                                        </ListItemIcon>
+                                        <ListItemText primary={'Inbox'} />
+                                    </ListItemButton>
+                                </ListItem>
                             </Link>
 
                             <MenuLogout></MenuLogout>
+                        </List>
+
+                        <Divider />
+
+                        <List>
+                            <Link className="linkButton" to={'/about'}>
+                                <ListItem key={'about'} disablePadding >
+                                    <ListItemButton>
+                                        <ListItemIcon>
+                                            <InfoIcon></InfoIcon>
+                                        </ListItemIcon>
+                                        <ListItemText primary={'About Pano'} />
+                                    </ListItemButton>
+                                </ListItem>
+                            </Link>
                         </List>
                     </Box>
                 </Drawer>

@@ -7,6 +7,7 @@ import NotFoundView from './features/NotFoundView';
 import PostsRoutes from './features/posts/PostsRoutes';
 import LoginView from './features/auth/LoginView';
 import { InboxView } from './features/users/InboxView';
+import { AboutView } from './features/AboutView';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
               <Route path="posts/*" element={<PostsRoutes />} />
               <Route path="login" element={<LoginView />} />
               <Route path="messages" element={<InboxView />} />
+              <Route path="about" element={<AboutView />} />
               <Route index element={<HomeView />} />
               <Route path="*" element={<NotFoundView />} />
             </Route>

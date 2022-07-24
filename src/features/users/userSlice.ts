@@ -4,5 +4,5 @@ export interface ShallowUser {
 }
 
 export interface User extends ShallowUser {
-    
+    score: number;
 }

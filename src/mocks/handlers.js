@@ -14,6 +14,7 @@ export const db = factory({
         id: primaryKey(faker.datatype.uuid),
         username: String,
         password: String,
+        score: Number,
         // firstName: String,
         // lastName: String,
         // name: String,
@@ -105,6 +106,7 @@ const createUserData = () => {
         // name: `${firstName} ${lastName}`,
         username: faker.internet.userName(),
         password: faker.internet.password(),
+        score: faker.datatype.number(MAX_SCORE),
     }
 }
 
@@ -237,7 +239,8 @@ for (const op of users) {
 // eslint-disable-next-line no-unused-vars
 export const testAuthenticatedUser = db.user.create({
     username: 'jcd',
-    password: 'bionicman'
+    password: 'bionicman',
+    score: 127
 });
 export const testAuthenticatedUserSession = db.session.create({
     userId: testAuthenticatedUser.id,

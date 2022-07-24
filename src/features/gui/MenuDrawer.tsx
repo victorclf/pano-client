@@ -23,7 +23,7 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                         <ListItemAvatar>
                             <Avatar>{user!.username[0].toUpperCase()}</Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={user!.username} secondary={'117 points'} />
+                        <ListItemText primary={user!.username} secondary={`${user.score} points`} />
                     {/* </ListItemButton> */}
                 </ListItem>
             </List>)

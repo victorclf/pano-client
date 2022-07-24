@@ -6,6 +6,7 @@ import HomeView from './features/HomeView';
 import NotFoundView from './features/NotFoundView';
 import PostsRoutes from './features/posts/PostsRoutes';
 import LoginView from './features/auth/LoginView';
+import { InboxView } from './features/users/InboxView';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<MyAppBar />}>
               <Route path="posts/*" element={<PostsRoutes />} />
               <Route path="login" element={<LoginView />} />
+              <Route path="messages" element={<InboxView />} />
               <Route index element={<HomeView />} />
               <Route path="*" element={<NotFoundView />} />
             </Route>

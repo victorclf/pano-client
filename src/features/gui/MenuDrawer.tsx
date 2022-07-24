@@ -59,6 +59,7 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                         <Divider />
                         
                         <List>
+                            <Link className="linkButton" to={'/messages'}>
                             <ListItem key={'inbox'} disablePadding >
                                 <ListItemButton>
                                     <ListItemIcon>
@@ -67,6 +68,7 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                                     <ListItemText primary={'Inbox'} />
                                 </ListItemButton>
                             </ListItem>
+                            </Link>
 
                             <MenuLogout></MenuLogout>
                         </List>

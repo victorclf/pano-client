@@ -1,6 +1,6 @@
 import { Add } from "@mui/icons-material";
 import { Card, CardActionArea, CardContent, Container, Fab, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PostActions, PostActionsSkeleton } from "./PostActions";
 import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor";
 import { useGetPostsQuery } from "./postSlice";
@@ -17,18 +17,17 @@ export const PostsList = () => {
         // error,
         // refetch
     } = useGetPostsQuery();
+    const navigate = useNavigate();
 
     const content = isSuccess
         ? posts.map((post) => (
             <Card id={post.id} key={post.id}>
-                <Link className="linkButton" to={`/posts/${post.id}`}>
-                    <CardActionArea>
-                        <CardContent>
-                            <PostAuthor author={post.author} date={post.date} />
-                            <PostTitle title={post.title} />
-                        </CardContent>
-                    </CardActionArea>
-                </Link>
+                <CardActionArea onClick={() => {navigate(`/posts/${post.id}`)}}>
+                    <CardContent>
+                        <PostAuthor author={post.author} date={post.date} />
+                        <PostTitle title={post.title} />
+                    </CardContent>
+                </CardActionArea>
                 <PostActions post={post} />
             </Card>
         ))

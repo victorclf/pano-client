@@ -16,3 +16,7 @@ code {
   color: inherit;
   text-decoration: inherit;
 }
+
+.underline-on-hover:hover {
+  text-decoration: underline;
+}

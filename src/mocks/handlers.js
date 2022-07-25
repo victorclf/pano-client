@@ -1,8 +1,11 @@
 import { factory, oneOf, manyOf, primaryKey, nullable } from '@mswjs/data'
 import { faker } from '@faker-js/faker';
-import { rest } from 'msw';
+import { createResponseComposition, rest } from 'msw';
 import { compareDesc, parseISO } from 'date-fns';
 
+const FAKE_DELAY = process.env.NODE_ENV !== 'test' 
+    ? 500 
+    : 0;
 // mswjs doesnt support finding objects which have a property equal to null
 const NULL_WORKAROUND = "NULL_WORKAROUND";
 
@@ -278,26 +281,30 @@ const hasValidToken = (req) => {
     return Boolean(getSessionFromRequest(req));
 };
 
+export const resWithDelay = createResponseComposition({
+    delay: FAKE_DELAY
+});
+
 export const handlers = [
     // ...db.post.toHandlers('rest'),
     rest.get('/posts', function (req, res, ctx) {
         const posts = db.post.getAll();
         posts.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
-        return res(ctx.json(posts));
+        return resWithDelay(ctx.json(posts));
     }),
     rest.get('/posts/:postId', function (req, res, ctx) {
         const post = db.post.findFirst({
             where: { id: { equals: req.params.postId } },
         });
         if (!post) {
-            return res(ctx.status(404));
+            return resWithDelay(ctx.status(404));
         }
-        return res(ctx.json(post));
+        return resWithDelay(ctx.json(post));
     }),
     rest.post('/posts', function (req, res, ctx) {
         const user = getUserFromRequest(req);
         if (!user) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
         
         const postData = req.body;
@@ -305,11 +312,11 @@ export const handlers = [
         postData.author = user;
         const post = db.post.create(postData);
 
-        return res(ctx.status(201), ctx.json(post));
+        return resWithDelay(ctx.status(201), ctx.json(post));
     }),
     rest.post('/posts/:postId/upvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const postId = req.params.postId;
@@ -336,15 +343,15 @@ export const handlers = [
                     score: newScore
                 },
             });
-            return res(ctx.status(200))
+            return resWithDelay(ctx.status(200));
         }
 
-        return res(ctx.status(400));
+        return resWithDelay(ctx.status(400));
     }),
 
     rest.post('/posts/:postId/nonvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const postId = req.params.postId;
@@ -368,7 +375,7 @@ export const handlers = [
                     score: post.score - 1
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         } else if (post.downvoted) {
             db.post.update({
                 where: {
@@ -381,15 +388,15 @@ export const handlers = [
                     score: post.score + 1
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         }
 
-        return res(ctx.status(400)); // ctx.json(updatedPost));
+        return resWithDelay(ctx.status(400)); // ctx.json(updatedPost));
     }),
 
     rest.post('/posts/:postId/downvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const postId = req.params.postId;
@@ -417,10 +424,10 @@ export const handlers = [
                     score: newScore
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         }
 
-        return res(ctx.status(400));
+        return resWithDelay(ctx.status(400));
     }),
 
     rest.get('/posts/:postId/comments', function (req, res, ctx) {
@@ -440,12 +447,12 @@ export const handlers = [
             c.replies.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
         }
 
-        return res(ctx.json(comments));
+        return resWithDelay(ctx.json(comments));
     }),
     rest.post('/posts/:postId/comments', function (req, res, ctx) {
         const author = getUserFromRequest(req);
         if (!author) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const requestData = req.body;
@@ -473,11 +480,11 @@ export const handlers = [
             });
         }
 
-        return res(ctx.status(201), ctx.json(comment));
+        return resWithDelay(ctx.status(201), ctx.json(comment));
     }),
     rest.post('/posts/:postId/comments/:commentId/upvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const commentId = req.params.commentId;
@@ -504,15 +511,15 @@ export const handlers = [
                     score: newScore
                 },
             });
-            return res(ctx.status(200))
+            return resWithDelay(ctx.status(200))
         }
 
-        return res(ctx.status(400));
+        return resWithDelay(ctx.status(400));
     }),
 
     rest.post('/posts/:postId/comments/:commentId/nonvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const commentId = req.params.commentId;
@@ -536,7 +543,7 @@ export const handlers = [
                     score: comment.score - 1
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         } else if (comment.downvoted) {
             db.comment.update({
                 where: {
@@ -549,15 +556,15 @@ export const handlers = [
                     score: comment.score + 1
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         }
 
-        return res(ctx.status(400));
+        return resWithDelay(ctx.status(400));
     }),
 
     rest.post('/posts/:postId/comments/:commentId/downvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
 
         const commentId = req.params.commentId;
@@ -584,10 +591,10 @@ export const handlers = [
                     score: newScore
                 },
             });
-            return res(ctx.status(200));
+            return resWithDelay(ctx.status(200));
         }
 
-        return res(ctx.status(400));
+        return resWithDelay(ctx.status(400));
     }),
     
     rest.post('/auth/login', (req, res, ctx) => {
@@ -598,23 +605,23 @@ export const handlers = [
             },
         });
         if (!user) {
-            return res(ctx.status(401), ctx.json({ message: `Invalid username/password` }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: `Invalid username/password` }));
         }
         
         const token = faker.datatype.uuid();
         db.session.create({ userId: user.id, token });
         
-        return res(ctx.json({ user, token }));
+        return resWithDelay(ctx.json({ user, token }));
     }),
 
     rest.post('/auth/logout', (req, res, ctx) => {
         const session = getSessionFromRequest(req);
         if (!session) {
-            return res(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
         
         db.session.delete({ where: { id: { equals: session.id } } });
         
-        return res(ctx.status(204));
+        return resWithDelay(ctx.status(204));
     }),
 ];

@@ -36,7 +36,7 @@ export const PostView = () => {
     let postContent = (
             <Card sx={{ mt: 2 }}>
                 <CardContent>
-                    {isSuccessPost ? <PostAuthor username={post.author.username} date={post.date} /> : <PostAuthorSkeleton />}
+                    {isSuccessPost ? <PostAuthor author={post.author} date={post.date} /> : <PostAuthorSkeleton />}
                     {isSuccessPost ? <PostTitle title={post.title} /> : <PostTitleSkeleton />}
                     {isSuccessPost ? <PostBody body={post.body} /> : <PostBodySkeleton />}
                 </CardContent>

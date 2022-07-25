@@ -32,6 +32,6 @@ const baseQueryWithErrorHandler: BaseQueryFn<
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithErrorHandler,
-    tagTypes: [...cacher.defaultTags, 'Post', 'Comment'],
+    tagTypes: [...cacher.defaultTags, 'Post', 'Comment', 'User'],
     endpoints: (builder) => ({})
 });

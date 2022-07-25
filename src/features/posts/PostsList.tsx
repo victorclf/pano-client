@@ -24,7 +24,7 @@ export const PostsList = () => {
                 <Link className="linkButton" to={`/posts/${post.id}`}>
                     <CardActionArea>
                         <CardContent>
-                            <PostAuthor username={post.author.username} date={post.date} />
+                            <PostAuthor author={post.author} date={post.date} />
                             <PostTitle title={post.title} />
                         </CardContent>
                     </CardActionArea>

@@ -4,7 +4,7 @@ import { createResponseComposition, rest } from 'msw';
 import { compareDesc, parseISO } from 'date-fns';
 
 const FAKE_DELAY = process.env.NODE_ENV !== 'test' 
-    ? 500 
+    ? 500
     : 0;
 // mswjs doesnt support finding objects which have a property equal to null
 const NULL_WORKAROUND = "NULL_WORKAROUND";
@@ -17,6 +17,8 @@ export const db = factory({
         id: primaryKey(faker.datatype.uuid),
         username: String,
         password: String,
+        date: String,
+        country: String,
         score: Number,
         // firstName: String,
         // lastName: String,
@@ -109,6 +111,8 @@ const createUserData = () => {
         // name: `${firstName} ${lastName}`,
         username: faker.internet.userName(),
         password: faker.internet.password(),
+        date: faker.date.past().toISOString(),
+        country: faker.address.country(),
         score: faker.datatype.number(MAX_SCORE),
     }
 }
@@ -243,7 +247,9 @@ for (const op of users) {
 export const testAuthenticatedUser = db.user.create({
     username: 'jcd',
     password: 'bionicman',
-    score: 127
+    score: 127,
+    date: faker.date.past().toISOString(),
+    country: 'United States',
 });
 export const testAuthenticatedUserSession = db.session.create({
     userId: testAuthenticatedUser.id,
@@ -595,6 +601,16 @@ export const handlers = [
         }
 
         return resWithDelay(ctx.status(400));
+    }),
+
+    rest.get('/users/:userId', function (req, res, ctx) {
+        const user = db.user.findFirst({
+            where: { id: { equals: req.params.userId } },
+        });
+        if (!user) {
+            return resWithDelay(ctx.status(404));
+        }
+        return resWithDelay(ctx.json(user));
     }),
     
     rest.post('/auth/login', (req, res, ctx) => {

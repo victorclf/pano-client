@@ -19,17 +19,19 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
 
     const userDisplay = user
         ? (<List>
+            <Link className="linkButton" to={`/users/${user.id}`}>
                 <ListItem key={user!.username} >
-                    {/* <ListItemButton> */}
+                    <ListItemButton>
                         <ListItemAvatar>
                             <Avatar>{user!.username[0].toUpperCase()}</Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={user!.username} secondary={`${user.score} points`} />
-                    {/* </ListItemButton> */}
+                    </ListItemButton>
                 </ListItem>
-            </List>)
+            </Link>
+        </List>)
         : (<List>
-            <Link className="linkButton" to={'/login'} state={{from: location}}>
+            <Link className="linkButton" to={'/login'} state={{ from: location }}>
                 <ListItem key={'login'} disablePadding >
                     <ListItemButton>
                         <ListItemIcon>
@@ -39,8 +41,8 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                     </ListItemButton>
                 </ListItem>
             </Link>
-            </List>);
-    
+        </List>);
+
     return (
         <div>
             <>
@@ -53,12 +55,12 @@ export default function MenuDrawer({ opened, onClose }: { opened: boolean, onClo
                         sx={{ width: 250 }}
                         role="presentation"
                         onClick={onClose}
-                        // onKeyDown={closeMenu}
+                    // onKeyDown={closeMenu}
                     >
-                        {userDisplay}   
+                        {userDisplay}
 
                         <Divider />
-                        
+
                         <List>
                             <Link className="linkButton" to={'/messages'}>
                                 <ListItem key={'inbox'} disablePadding >

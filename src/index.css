@@ -20,3 +20,7 @@ code {
 .underline-on-hover:hover {
   text-decoration: underline;
 }
+
+.myInfiniteScroll {
+  overflow: unset !important;
+}

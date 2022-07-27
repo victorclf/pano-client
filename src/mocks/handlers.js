@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { createResponseComposition, rest } from 'msw';
 import { compareDesc, parseISO } from 'date-fns';
 
-const FAKE_DELAY = process.env.NODE_ENV !== 'test' 
+const FAKE_DELAY = process.env.NODE_ENV !== 'test'
     ? 500
     : 0;
 // mswjs doesnt support finding objects which have a property equal to null
@@ -94,8 +94,8 @@ if (useSeededRNG) {
 // *********************************
 // *** GENERATE RANDOM MOCK DATA ***
 // *********************************
-const NUM_USERS = 5
-const POSTS_PER_USER = 5
+const NUM_USERS = 10
+const POSTS_PER_USER = 7
 const COMMENTS_PER_POST = 5
 const MAX_REPLIES_PER_COMMENT = 5
 const MAX_SCORE = 1000
@@ -292,10 +292,16 @@ export const resWithDelay = createResponseComposition({
 });
 
 export const handlers = [
-    // ...db.post.toHandlers('rest'),
     rest.get('/posts', function (req, res, ctx) {
-        const posts = db.post.getAll();
-        posts.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
+        const cursor = req.url.searchParams.get('cursor');
+        const size = Math.min(req.url.searchParams.get('size') ?? 20, 20);
+        const posts = db.post.findMany({
+            take: size,
+            cursor,
+            orderBy: {
+                date: 'desc',
+            },
+        });
         return resWithDelay(ctx.json(posts));
     }),
     rest.get('/posts/:postId', function (req, res, ctx) {
@@ -312,7 +318,7 @@ export const handlers = [
         if (!user) {
             return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
-        
+
         const postData = req.body;
         postData.date = new Date().toISOString();
         postData.author = user;
@@ -612,7 +618,7 @@ export const handlers = [
         }
         return resWithDelay(ctx.json(user));
     }),
-    
+
     rest.post('/auth/login', (req, res, ctx) => {
         const user = db.user.findFirst({
             where: {
@@ -623,10 +629,10 @@ export const handlers = [
         if (!user) {
             return resWithDelay(ctx.status(401), ctx.json({ message: `Invalid username/password` }));
         }
-        
+
         const token = faker.datatype.uuid();
         db.session.create({ userId: user.id, token });
-        
+
         return resWithDelay(ctx.json({ user, token }));
     }),
 
@@ -635,9 +641,9 @@ export const handlers = [
         if (!session) {
             return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
         }
-        
+
         db.session.delete({ where: { id: { equals: session.id } } });
-        
+
         return resWithDelay(ctx.status(204));
     }),
 ];

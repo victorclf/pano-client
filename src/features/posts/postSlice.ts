@@ -21,8 +21,13 @@ export interface PostData extends ShallowPostData {
 
 export const extendedApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getPosts: builder.query<ShallowPostData[], void>({
-            query: () => '/posts',
+        getPosts: builder.query<ShallowPostData[], { cursor?: string | null, size?: number }>({
+            query: ({ cursor = null, size = 20 }) => ({
+                url: '/posts',
+                params: { 
+                    cursor: cursor ?? undefined, 
+                    size }
+            }),
             providesTags: cacher.providesList("Post")
             // (result = [], error, arg) => [
             //     { type: 'Post' },
@@ -48,12 +53,6 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST'
             }),
             async onQueryStarted(postId, { dispatch, queryFulfilled }) {
-                const getPostsCacheUpdate = dispatch(
-                    extendedApiSlice.util.updateQueryData('getPosts', undefined, (posts) => {
-                        const post = posts.find((post) => post.id === postId)
-                        updateUpvote(post);
-                    })
-                );
                 const getPostCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getPost', postId, (post) => {
                         updateUpvote(post);
@@ -62,10 +61,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
                 } catch {
-                    getPostsCacheUpdate.undo();
                     getPostCacheUpdate.undo();
                 }
             },
+            invalidatesTags: cacher.invalidatesList("Post"),
         }),
         nonvote: builder.mutation<void, string>({
             query: (postId) => ({
@@ -73,12 +72,6 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST'
             }),
             async onQueryStarted(postId, { dispatch, queryFulfilled }) {
-                const getPostsCacheUpdate = dispatch(
-                    extendedApiSlice.util.updateQueryData('getPosts', undefined, (posts) => {
-                        const post = posts.find((post) => post.id === postId)
-                        updateNonvote(post);
-                    })
-                );
                 const getPostCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getPost', postId, (post) => {
                         updateNonvote(post);
@@ -87,10 +80,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
                 } catch {
-                    getPostsCacheUpdate.undo();
                     getPostCacheUpdate.undo();
                 }
             },
+            invalidatesTags: cacher.invalidatesList("Post"),
         }),
         downvote: builder.mutation<void, string>({
             query: (postId) => ({
@@ -98,12 +91,6 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'POST'
             }),
             async onQueryStarted(postId, { dispatch, queryFulfilled }) {
-                const getPostsCacheUpdate = dispatch(
-                    extendedApiSlice.util.updateQueryData('getPosts', undefined, (posts) => {
-                        const post = posts.find((post) => post.id === postId);
-                        updateDownvote(post);
-                    })
-                );
                 const getPostCacheUpdate = dispatch(
                     extendedApiSlice.util.updateQueryData('getPost', postId, (post) => {
                         updateDownvote(post);
@@ -112,16 +99,17 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
                 } catch {
-                    getPostsCacheUpdate.undo();
                     getPostCacheUpdate.undo();
                 }
             },
+            invalidatesTags: cacher.invalidatesList("Post"),
         }),
     }),
 })
 
 export const {
     useGetPostsQuery,
+    useLazyGetPostsQuery,
     useGetPostQuery,
     useCreatePostMutation,
     useUpvoteMutation,

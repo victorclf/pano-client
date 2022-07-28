@@ -494,6 +494,21 @@ export const handlers = [
 
         return resWithDelay(ctx.status(201), ctx.json(comment));
     }),
+    rest.patch('/posts/:postId/comments/:commentId', function (req, res, ctx) {
+        const author = getUserFromRequest(req);
+        if (!author) {
+            return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));
+        }
+
+        const comment = db.comment.update({
+            where: { id: { equals: req.params.commentId } },
+            data: {
+                body: req.body.body,
+            },
+        });
+
+        return resWithDelay(ctx.status(200), ctx.json(comment));
+    }),
     rest.post('/posts/:postId/comments/:commentId/upvote', function (req, res, ctx) {
         if (!hasValidToken(req)) {
             return resWithDelay(ctx.status(401), ctx.json({ message: 'You must sign in before accessing this.' }));

@@ -1,9 +1,9 @@
-import { AddComment, ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { AddComment, ArrowDownward, ArrowUpward, Edit } from "@mui/icons-material";
 import { CardActions, IconButton, Typography } from "@mui/material";
 import { useAuth } from "../auth/useAuth";
 import { CommentData, useDownvoteCommentMutation, useNonvoteCommentMutation, useUpvoteCommentMutation } from "./commentSlice";
 
-export const CommentActions = ({ comment, onReply }: { comment: CommentData, onReply: () => void }) => {
+export const CommentActions = ({ comment, onReply, onEdit }: { comment: CommentData, onReply: () => void, onEdit?: () => void }) => {
     const { protectFunction } = useAuth();
     const [upvote, { isLoading: isLoadingUpvote }] = useUpvoteCommentMutation();
     const [nonvote, { isLoading: isLoadingNonvote }] = useNonvoteCommentMutation();
@@ -49,6 +49,17 @@ export const CommentActions = ({ comment, onReply }: { comment: CommentData, onR
                     Reply
                 </Typography>
             </IconButton>
+
+            {onEdit
+                ? <IconButton aria-label="edit" onClick={onEdit} sx={{ ml: 1 }}>
+                    <Edit />
+                    <Typography variant="body2" color="text.primary" sx={{ textAlign: 'center', width: 32 }}>
+                        Edit
+                    </Typography>
+                </IconButton>
+                : ''
+            }
+
         </CardActions>
     )
 }

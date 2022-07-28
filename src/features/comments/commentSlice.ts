@@ -9,6 +9,12 @@ export interface CreateCommentData {
     parentCommentId?: string;
 }
 
+export interface EditCommentData {
+    postId: string;
+    commentId: string;
+    body: string;
+}
+
 export interface CommentData extends Votable {
     id: string;
     body: string;
@@ -46,6 +52,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 url: `/posts/${postId}/comments`,
                 method: 'POST',
                 body: newComment,
+            }),
+            invalidatesTags: (result, error, arg) => [{ type: "Comment", id: arg.postId }],
+        }),
+        editComment: builder.mutation<CommentData, EditCommentData>({
+            query: ({ postId, commentId, body }) => ({
+                url: `/posts/${postId}/comments/${commentId}`,
+                method: 'PATCH',
+                body: {body} as EditCommentData
             }),
             invalidatesTags: (result, error, arg) => [{ type: "Comment", id: arg.postId }],
         }),
@@ -112,6 +126,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 export const {
     useGetCommentsQuery,
     useCreateCommentMutation,
+    useEditCommentMutation,
     useUpvoteCommentMutation,
     useNonvoteCommentMutation,
     useDownvoteCommentMutation } = extendedApiSlice

@@ -5,37 +5,58 @@ import { CommentContent } from "./CommentContent"
 import { CreateCommentForm } from "./CreateCommentForm"
 import { CommentData } from "./commentSlice"
 import { useAuth } from "../auth/useAuth"
+import { EditCommentForm } from "./EditCommentForm"
 
 export const Comment = ({ comment }: { comment: CommentData }) => {
-    const { protectFunction } = useAuth();
+    const { user, protectFunction } = useAuth();
     const [showReplyForm, setShowReplyForm] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     const onReply = protectFunction(() => {
         setShowReplyForm((prevState: boolean) => !prevState);
     });
+    const onEdit = user && user.id === comment.author.id
+        ? () => {
+            setEditMode(!editMode);
+        }
+        : undefined;
     const onCommentAdded = () => {
         setShowReplyForm(false);
     };
+    const onCommentEditFinished = () => {
+        setEditMode(false);
+    }
 
     // HACK Checking for NULL_WORKAROUND to deal with limitation from mswjs. Remove this later.
     const isReply = comment.parentCommentId !== 'NULL_WORKAROUND' ? Boolean(comment.parentCommentId) : false;
 
     const topCommentSx = { m: 1, mt: 2 };
     const replySx = { m: 1, mt: 0, ml: 6 };
-    const cardSx = isReply 
+    const cardSx = isReply
         ? replySx
         : topCommentSx;
-    return (
-            <>
-                <Card sx={cardSx}>
-                    <CommentContent comment={comment} />
-                    <CommentActions comment={comment} onReply={onReply} />
-                </Card>
 
-                {showReplyForm 
-                    ? <Card sx={replySx}><CreateCommentForm parentCommentId={isReply ? comment.parentCommentId : comment.id} onCommentAdded={onCommentAdded} /></Card>
-                    : ''}
-            </>
+    const content = editMode
+        ? (
+            <Card sx={cardSx}>
+                <EditCommentForm commentId={comment.id} body={comment.body} onCommentEdited={onCommentEditFinished} onCommentEditAborted={onCommentEditFinished} />
+            </Card>
+        )
+        : (
+            <Card sx={cardSx}>
+                <CommentContent comment={comment} />
+                <CommentActions comment={comment} onReply={onReply} onEdit={onEdit} />
+            </Card>
         );
+
+    return (
+        <>
+            {content}
+
+            {showReplyForm
+                ? <Card sx={replySx}><CreateCommentForm parentCommentId={isReply ? comment.parentCommentId : comment.id} onCommentAdded={onCommentAdded} /></Card>
+                : ''}
+        </>
+    );
 }
 
 export const CommentSkeleton = () => {

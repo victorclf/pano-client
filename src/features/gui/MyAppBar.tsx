@@ -62,7 +62,6 @@ export const MyAppBar = () => {
                     <Typography variant="h6" component="div" noWrap={true} sx={{ flexGrow: 1 }}>
                         {title ?? DEFAULT_APP_TITLE}
                     </Typography>
-                    {/* <Button color="inherit">Login</Button> */}
                 </Toolbar>
             </AppBar>
 

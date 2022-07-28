@@ -33,9 +33,9 @@ export const CommentForm = ({ commentId, body, onSubmit, onCancel }: CommentForm
                 <TextFieldElement id="body" label="Add your comment..." name="body" validation={{ required: 'Comment cannot be empty' }}
                     variant="outlined" fullWidth multiline minRows={1} />
                 <Stack spacing={1} direction="row-reverse">
-                    <Button type="submit" variant="contained" size="medium">{confirmLabel}</Button>
+                    <Button type="submit" variant="contained" size="medium" disabled={formContext.formState.isSubmitting}>{confirmLabel}</Button>
                     {onCancel
-                        ? <Button variant="outlined" size="medium" onClick={onCancel}>Cancel</Button>
+                        ? <Button variant="outlined" size="medium" onClick={onCancel} disabled={formContext.formState.isSubmitting}>Cancel</Button>
                         : ''
                     }
                 </Stack>

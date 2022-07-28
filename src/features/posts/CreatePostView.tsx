@@ -41,20 +41,6 @@ export const CreatePostView = () => {
                     </Stack>
                 </Stack>
             </FormContainer>
-
-            {/* Render without react-hook-form */}
-            {/* <Container maxWidth="md" disableGutters>
-            {/* <Card sx={{mt: 0, p: 2}} > */}
-            {/* <Box component="form">
-                    <Stack direction="column" spacing={2} sx={{mt:2}}>
-                        <TextField id="title" label="Title" variant="outlined" fullWidth/>
-                        <TextField id="body" label="Text" variant="outlined" fullWidth multiline minRows={5}/>
-                        <Stack direction="row">
-                            <Button variant="contained" size="large">Create</Button>
-                        </Stack>
-                    </Stack>
-                </Box> */}
-            {/* </Card> */}
         </Container>
     )
 }

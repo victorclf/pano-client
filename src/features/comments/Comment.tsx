@@ -38,7 +38,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
     const content = editMode
         ? (
             <Card sx={cardSx}>
-                <EditCommentForm commentId={comment.id} body={comment.body} onCommentEdited={onCommentEditFinished} onCommentEditAborted={onCommentEditFinished} />
+                <EditCommentForm commentId={comment.id} body={comment.body} onEdited={onCommentEditFinished} onEditAborted={onCommentEditFinished} />
             </Card>
         )
         : (
@@ -53,7 +53,7 @@ export const Comment = ({ comment }: { comment: CommentData }) => {
             {content}
 
             {showReplyForm
-                ? <Card sx={replySx}><CreateCommentForm parentCommentId={isReply ? comment.parentCommentId : comment.id} onCommentAdded={onCommentAdded} /></Card>
+                ? <Card sx={replySx}><CreateCommentForm parentCommentId={isReply ? comment.parentCommentId : comment.id} onCreated={onCommentAdded} /></Card>
                 : ''}
         </>
     );

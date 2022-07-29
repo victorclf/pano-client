@@ -1,17 +1,15 @@
-import { factory, oneOf, manyOf, primaryKey, nullable } from '@mswjs/data'
 import { faker } from '@faker-js/faker';
-import { createResponseComposition, rest } from 'msw';
+import { factory, manyOf, nullable, oneOf, primaryKey } from '@mswjs/data';
 import { compareDesc, parseISO } from 'date-fns';
+import { createResponseComposition, rest } from 'msw';
+import { generateMockData } from './mockData';
 
 const FAKE_DELAY = process.env.NODE_ENV !== 'test'
     ? 500
     : 0;
 // mswjs doesnt support finding objects which have a property equal to null
-const NULL_WORKAROUND = "NULL_WORKAROUND";
+export const NULL_WORKAROUND = "NULL_WORKAROUND";
 
-// ******************
-// *** DATA MODEL ***
-// ******************
 export const db = factory({
     user: {
         id: primaryKey(faker.datatype.uuid),
@@ -70,180 +68,12 @@ export const db = factory({
     // },
 })
 
-// *****************************
-// *** SET FIXED RANDOM SEED ***
-// *****************************
-let useSeededRNG = true;
-// let rng = seedrandom()
-if (useSeededRNG) {
-    let randomSeedString = localStorage.getItem('randomTimestampSeed');
-    let seedDate;
 
-    if (randomSeedString) {
-        seedDate = new Date(randomSeedString);
-    } else {
-        seedDate = new Date();
-        randomSeedString = seedDate.toISOString();
-        localStorage.setItem('randomTimestampSeed', randomSeedString);
-    }
-    // rng = seedrandom(randomSeedString)
-    // setRandom(rng)
-    faker.seed(seedDate.getTime())
-}
+// *****************
+// *** MOCK DATA ***
+// *****************
+generateMockData();
 
-// *********************************
-// *** GENERATE RANDOM MOCK DATA ***
-// *********************************
-const NUM_USERS = 10
-const POSTS_PER_USER = 7
-const COMMENTS_PER_POST = 5
-const MAX_REPLIES_PER_COMMENT = 5
-const MAX_SCORE = 1000
-const RECENT_DAYS = 7;
-
-const createUserData = () => {
-    // const firstName = faker.name.firstName()
-    // const lastName = faker.name.lastName()
-
-    return {
-        // firstName,
-        // lastName,
-        // name: `${firstName} ${lastName}`,
-        username: faker.internet.userName(),
-        password: faker.internet.password(),
-        date: faker.date.past().toISOString(),
-        country: faker.address.country(),
-        score: faker.datatype.number(MAX_SCORE),
-    }
-}
-
-const createPostData = (author) => {
-    return {
-        title: faker.lorem.words(4),
-        // date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
-        author,
-        body: faker.lorem.paragraphs(),
-        date: faker.date.recent(RECENT_DAYS).toISOString(),
-        score: faker.datatype.number(MAX_SCORE),
-        upvoted: false,
-        downvoted: false,
-        // reactions: db.reaction.create(),
-    }
-}
-
-const createCommentData = (post, author, parentComment = NULL_WORKAROUND) => {
-    return {
-        body: faker.lorem.sentences(),
-        postId: post.id,
-        author,
-        replies: [],
-        parentCommentId: parentComment === NULL_WORKAROUND ? NULL_WORKAROUND : parentComment.id,
-        date: faker.date.between(post.date, new Date()).toISOString(),
-        score: faker.datatype.number(MAX_SCORE),
-        upvoted: false,
-        downvoted: false,
-    }
-}
-
-// let author1 = createUserData()
-// author1.username = 'deckard.cain'
-// author1 = db.user.create(author1);
-// let post1 = createPostData(author1);
-// post1.title = 'The Forgotten Tower';
-// post1.body = `And so it came to pass that the Countess, who once bathed in the rejuvenating blood of a hundred virgins, was buried alive... 
-//          And her castle in which so many cruel deeds took place fell rapidly into ruin. Rising over the buried dungeons in that god-forsaken wilderness,
-//          a solitary tower, like some monument to Evil, is all that remains.
-
-//          The Countess' fortune was believed to be divided among the clergy, although some say that more remains unfound, 
-//          still buried alongside the rotting skulls that bear mute witness to the inhumanity of the human creature.`;
-// post1 = db.post.create(post1);
-// let comment1 = createCommentData(post1, author1)
-// let comments: Array<CommentData> = [
-//   {
-//       id: 1,
-//       author: 'warrior666',
-//       body: 'Your death will be avenged!',
-//       score: 461,
-//       replies: [
-//           {
-//               id: 2,
-//               author: 'anon7',
-//               body: '@warrior666 The sanctity of this place has been fouled.',
-//               score: 6,
-//           },
-//           {
-//               id: 3,
-//               author: 'anon8',
-//               body: '@anon7 Hello, my friend. Stay awhile and listen.',
-//               score: 2,
-//           },
-//       ]
-//   },
-//   {
-//       id: 4,
-//       author: 'anon4',
-//       body: 'you missed the ellipsis at the beginning of the quote',
-//       score: 3,
-//   },
-//   {
-//       id: 5,
-//       author: 'anon0',
-//       body: 'good times',
-//       score: 1,
-//   },
-//   {
-//       id: 6,
-//       author: 'anon2',
-//       body: 'Worst quest in act 1!',
-//       score: -99,
-//   },
-// ]
-
-
-
-
-
-
-// Create an initial set of users and posts
-const users = []
-for (let i = 0; i < NUM_USERS; i++) {
-    users.push(db.user.create(createUserData()))
-}
-
-// const op = faker.helpers.arrayElement(users);
-for (const op of users) {
-    for (let j = 0; j < POSTS_PER_USER; j++) {
-        const post = db.post.create(createPostData(op));
-        for (let k = 0; k < COMMENTS_PER_POST; k++) {
-            const commenter = faker.helpers.arrayElement(users);
-            let comment = db.comment.create(createCommentData(post, commenter));
-            if (k === 0) {
-                for (let l = 0; l < MAX_REPLIES_PER_COMMENT; ++l) {
-                    const replier = faker.helpers.arrayElement(users);
-                    const reply = db.comment.create(createCommentData(post, replier, comment));
-
-                    comment = db.comment.update({
-                        where: {
-                            id: {
-                                equals: comment.id
-                            }
-                        },
-                        data: {
-                            // Derive the next value from the previous one and the unmodified entity
-                            replies: (prevReplies, comment) => [...prevReplies, reply]
-                        }
-                    });
-                }
-            }
-        }
-    }
-}
-
-
-// *********************************
-// *** GENERATE CUSTOM MOCK DATA ***
-// *********************************
-// eslint-disable-next-line no-unused-vars
 export const testAuthenticatedUser = db.user.create({
     username: 'jcd',
     password: 'bionicman',
@@ -255,6 +85,7 @@ export const testAuthenticatedUserSession = db.session.create({
     userId: testAuthenticatedUser.id,
     token: '123456'
 });
+
 
 
 // ****************
@@ -451,10 +282,13 @@ export const handlers = [
                 parentCommentId: {
                     equals: NULL_WORKAROUND
                 },
-            }
+            },
+            orderBy: {
+                score: 'desc',
+            },
         });
 
-        comments.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
+        // comments.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
         for (const c of comments) {
             c.replies.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
         }

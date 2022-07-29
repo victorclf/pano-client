@@ -17,7 +17,7 @@ export const AboutView = () => {
             <Typography padding={1} paddingTop={2} variant="h6" color="text.primary">Our Solution</Typography>
             <Typography padding={1} variant="body1" color="text.primary">Welcome to Pano (Politics And Negativity Omitted)!</Typography>
             <Typography padding={1} variant="body1" color="text.primary">Pano is a place without endless political discussion, negativity and bitter criticism.</Typography>
-            <Typography padding={1} variant="body1" color="text.primary">Share, discuss, learn, grow and relax in Pano.</Typography>
+            <Typography padding={1} variant="body1" color="text.primary">Share, discuss, learn and relax in Pano.</Typography>
         </Container>
     )
 }

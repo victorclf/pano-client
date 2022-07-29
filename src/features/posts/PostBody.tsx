@@ -2,7 +2,7 @@ import { Skeleton, Typography } from "@mui/material"
 
 export const PostBody = ({ body }: { body: string }) => {
     return (
-        <Typography paddingTop={2} variant="body1" color="text.primary">
+        <Typography paddingTop={2} variant="body1" color="text.primary" whiteSpace="pre-line">
             {body}
         </Typography>
     )

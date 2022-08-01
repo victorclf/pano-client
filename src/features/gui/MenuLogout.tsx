@@ -5,7 +5,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { useAppDispatch } from '../../app/hooks';
-import { loggedOut, useLogoutMutation } from '../auth/authSlice';
+import { extendedApiSlice, loggedOut, useLogoutMutation } from '../auth/authSlice';
 import { useAuth } from '../auth/useAuth';
 
 export default function MenuLogout() {
@@ -18,6 +18,7 @@ export default function MenuLogout() {
             try {
                 await logout().unwrap();
                 dispatch(loggedOut());
+                dispatch(extendedApiSlice.util.resetApiState()); // clear whole API cache
             } catch (err) {
                 if ((err as FetchBaseQueryError)?.status !== 401) {
                     // TODO Show proper error dialog

@@ -3,7 +3,7 @@ import { FormContainer, PasswordElement, TextFieldElement } from "react-hook-for
 import { Location, Navigate, useLocation } from "react-router-dom";
 import { useAppDispatch } from '../../app/hooks';
 import { testAuthenticatedUser } from "../../mocks/handlers";
-import { LoginRequest, LoginResponse, loggedIn, useLoginMutation } from "../auth/authSlice";
+import { LoginRequest, LoginResponse, loggedIn, useLoginMutation, extendedApiSlice } from "../auth/authSlice";
 import { useCustomAppBar } from "../gui/useCustomAppBar";
 import { useAuth } from "./useAuth";
 
@@ -23,6 +23,7 @@ export default function LoginView() {
             try {
                 const loginResponse: LoginResponse = await login(data).unwrap();
                 dispatch(loggedIn(loginResponse));
+                dispatch(extendedApiSlice.util.resetApiState()); // clear whole API cache
                 // Navigation is handled by the <Navigate> component during rerender with a valid user.
             } catch (err) {
                 // TODO Show proper error dialog

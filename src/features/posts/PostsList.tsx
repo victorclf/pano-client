@@ -1,85 +1,76 @@
 import { Add } from "@mui/icons-material";
-import { Card, CardActionArea, CardContent, Container, Fab, Stack, Typography } from "@mui/material";
+import { CircularProgress, Container, Fab, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Link, useNavigate } from "react-router-dom";
-import { PostActions, PostActionsSkeleton } from "./PostActions";
-import { PostAuthor, PostAuthorSkeleton } from "./PostAuthor";
-import { ShallowPostData, useLazyGetPostsQuery } from "./postSlice";
-import { PostTitle, PostTitleSkeleton } from "./PostTitle";
+import { Link } from "react-router-dom";
+import { useAppDispatch } from "../../app/hooks";
+import { extendedApiSlice, useLazyGetPostsQuery } from "./postSlice";
+import { PostsPage, PostsPageSkeleton } from "./PostsPage";
 
 
 export const PostsList = () => {
-    const navigate = useNavigate();
-    const [posts, setPosts] = useState<ShallowPostData[]>([]);
+    const [visibleCursors, setVisibleCursors] = useState<Array<string | null>>([]);
+    const [numPosts, setNumPosts] = useState(0);
     const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [trigger] = useLazyGetPostsQuery();
+    const dispatch = useAppDispatch();
 
     const fetchMore = useCallback(
         async () => {
             try {
                 const newPosts = await trigger({ cursor: nextCursor }, true).unwrap();
-                setPosts([...posts, ...newPosts]);
+                setNumPosts(numPosts + newPosts.length);
+                setVisibleCursors([...visibleCursors!, nextCursor!]);
                 setNextCursor(newPosts.at(-1)?.id ?? null);
             } catch (err) {
                 alert(`Failed to fetch posts! \n\n` + JSON.stringify(err, null, 2));
             }
-        }, [nextCursor, posts, trigger]);
-
-
-    // Triggers the initial fetch which must only happen when component first renders b/c
-    // InfiniteScroll only triggers the subsequent fetches, i.e. when the scroll reaches bottom.
-    useEffect(() => {
-        if (posts.length <= 0) {
-            fetchMore();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        }, [nextCursor, numPosts, trigger, visibleCursors]);
 
     const hasMoreData = nextCursor !== null;
+    const refresh = () => {
+        setVisibleCursors([]);
+        setNextCursor(null);
+        dispatch(extendedApiSlice.util.invalidateTags(['Post']));
+    };
 
-    const postsSkeleton = (
-        <Stack spacing={1} sx={{ pt: 1 }}>
-            {Array.from(new Array(10), (_, i) => (
-                <Card key={i}>
-                    <CardActionArea>
-                        <CardContent>
-                            <PostAuthorSkeleton />
-                            <PostTitleSkeleton />
-                        </CardContent>
-                    </CardActionArea>
-                    <PostActionsSkeleton />
-                </Card>
-            ))}
-        </Stack>
-    );
+    // Triggers the initial fetch b/c InfiniteScroll only triggers the subsequent fetches, i.e. when the scroll reaches bottom.
+    useEffect(() => {
+        if (visibleCursors.length === 0) {
+            fetchMore();
+        }
+    }, [fetchMore, visibleCursors]);
 
-    const content = posts.length > 0
+    const content = visibleCursors.length > 0
         ? (
             <InfiniteScroll
                 className="myInfiniteScroll"
-                dataLength={posts.length}
+                dataLength={numPosts}
                 next={fetchMore}
                 hasMore={hasMoreData}
-                loader={postsSkeleton}
-                endMessage={<Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', m: 3 }}>No more posts :-(</Typography>}
+                loader={<PostsPageSkeleton />}
+                endMessage={<Typography variant="body1" color="text.primary" align="center" sx={{ m: 3 }}>No more posts :-(</Typography>}
+
+                refreshFunction={refresh}
+                pullDownToRefresh
+                pullDownToRefreshThreshold={50}
+                pullDownToRefreshContent={
+                    <Typography variant="body1" color="text.primary" align="center">&#8595; Pull down to refresh</Typography>
+                }
+                releaseToRefreshContent={
+                    <Stack spacing={5} alignItems="center">
+                        <CircularProgress size={32} sx={{ textAlign: "center" }} />
+                    </Stack>
+                }
             >
                 <Stack spacing={1} sx={{ pt: 1, }}>
-                    {posts.map((post) => (
-                        <Card id={post.id} key={post.id}>
-                            <CardActionArea onClick={() => { navigate(`/posts/${post.id}`) }}>
-                                <CardContent>
-                                    <PostAuthor author={post.author} date={post.date} />
-                                    <PostTitle title={post.title} />
-                                </CardContent>
-                            </CardActionArea>
-                            <PostActions post={post} />
-                        </Card>
+                    {visibleCursors.map((cursor) => (
+                        <PostsPage key={cursor} cursor={cursor} />
                     ))}
                 </Stack>
             </InfiniteScroll>
         )
-        : postsSkeleton;
+        : <PostsPageSkeleton />;
 
     return (
         <Container maxWidth="md">

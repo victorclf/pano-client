@@ -56,5 +56,6 @@
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "homepage": "/pano-client"
 }

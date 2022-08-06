@@ -12,10 +12,10 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { BrowserRouter } from 'react-router-dom';
 
-if (process.env.NODE_ENV === 'development') {
+// if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./mocks/browser')
   worker.start({ onUnhandledRequest: 'bypass' })
-}
+// }
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container!);

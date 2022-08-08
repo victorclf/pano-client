@@ -13,8 +13,13 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter } from 'react-router-dom';
 
 // if (process.env.NODE_ENV === 'development') {
-  const { worker } = require('./mocks/browser')
-  worker.start({ onUnhandledRequest: 'bypass' })
+const { worker } = require('./mocks/browser')
+worker.start({
+  onUnhandledRequest: 'bypass',
+  serviceWorker: {
+    url: `${process.env.PUBLIC_URL}/mockServiceWorker.js`,
+  }
+})
 // }
 
 const container = document.getElementById('root');

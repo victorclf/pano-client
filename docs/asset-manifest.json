@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/pano-client/static/css/main.9945a4d3.css",
-    "main.js": "/pano-client/static/js/main.dc09adcd.js",
+    "main.js": "/pano-client/static/js/main.c5feba94.js",
     "static/media/roboto-all-500-normal.woff": "/pano-client/static/media/roboto-all-500-normal.52cb737b682eb9661ee1.woff",
     "static/media/roboto-all-700-normal.woff": "/pano-client/static/media/roboto-all-700-normal.ef6d1d09b20b877fee4e.woff",
     "static/media/roboto-all-400-normal.woff": "/pano-client/static/media/roboto-all-400-normal.376ea5d93f71583052f6.woff",
@@ -36,10 +36,10 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/pano-client/static/media/roboto-greek-ext-700-normal.9674bc0ae12c2551d9d1.woff2",
     "index.html": "/pano-client/index.html",
     "main.9945a4d3.css.map": "/pano-client/static/css/main.9945a4d3.css.map",
-    "main.dc09adcd.js.map": "/pano-client/static/js/main.dc09adcd.js.map"
+    "main.c5feba94.js.map": "/pano-client/static/js/main.c5feba94.js.map"
   },
   "entrypoints": [
     "static/css/main.9945a4d3.css",
-    "static/js/main.dc09adcd.js"
+    "static/js/main.c5feba94.js"
   ]
 }
